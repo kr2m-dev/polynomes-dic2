@@ -1,0 +1,45 @@
+# Ignore les fichiers compilés et exécutables
+
+# C
+*.exe
+*.o
+*.obj
+*.out
+*.a
+*.so
+*.dll
+polynome
+test_q*
+
+# Java
+*.class
+*.jar
+bin/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.project
+*.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*~
+*.swp
+*.swo
+
+# Documentation générée
+docs/html/
+docs/latex/
+
+# Rapport (PDF généré, pas les sources)
+*.pdf
+!consignes.pdf
