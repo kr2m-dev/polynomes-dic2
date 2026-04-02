@@ -1,6 +1,16 @@
-/*
- * polynome.c - Implementation des fonctions pour la manipulation des polynomes
- * Tableau noir - Question sur les listes chainees - Exercice C
+/**
+ * @file polynome.c
+ * @brief Implémentation des fonctions de manipulation des polynômes
+ * @details Ce fichier contient:
+ *          - Q1, Q2, Q3: COMPLÉTÉES (Analyseur, Codage, Affichage)
+ *          - Q4, Q5, Q6: À IMPLÉMENTER PAR VOS CAMARADES
+ * 
+ * INSTRUCTIONS POUR LE GROUPE:
+ * - Q1, Q2, Q3: DÉJÀ COMPLÉTÉES (ne pas modifier)
+ * - Q4, Q5, Q6: LAISSEZ VIDE avec TODO pour vos camarades
+ * - Chaque membre implémente sa question assignée
+ * - Ne pas modifier les signatures de fonctions
+ * - Tester individuellement avant de merger
  */
 
 #include "../include/polynome.h"
@@ -9,13 +19,22 @@
 #include <math.h>
 
 /* ============================================================
- * VARIABLES GLOBALES (pour le garbage collector Q7)
- * ============================================================ */
+ * VARIABLES GLOBALES (pour Q6 - Garbage Collector)
+ * ============================================================
+ * Gérées par SysSec 2
+ */
 POINTEUR tousLesMaillons = NULL;
 POINTEUR polyUtile[100];
 int nbPolyUtiles = 0;
 
-/* Pour l'analyseur lexical */
+/* ============================================================
+ * QUESTION 1: ANALYSEUR SYNTAXIQUE
+ * Assigné à: IABD 1 - COMPLÉTÉ ✓
+ * Grammaire: polynôme → ['-'] monôme { ('+' | '-') monôme }
+ * ============================================================
+ */
+
+/* Types pour l'analyseur lexical */
 typedef enum {
     TOKEN_PLUS,    /* + */
     TOKEN_MOINS,   /* - */
@@ -23,7 +42,7 @@ typedef enum {
     TOKEN_X,       /* X */
     TOKEN_PUISS,   /* ^ */
     TOKEN_NB,      /* nombre */
-    TOKEN_FIN,     /* fin de chaine */
+    TOKEN_FIN,     /* fin de chaîne */
     TOKEN_ERREUR   /* erreur */
 } TokenType;
 
@@ -38,16 +57,7 @@ static char *texte;
 static int pos = 0;
 static Token tokenCourant;
 
-/* Declarations des fonctions internes */
-static void avancer();
-static void initialiserAnalyseur(char *s);
-static int analyserXpuissance();
-static POINTEUR analyserMonome(int signe);
-
-/* ============================================================
- * 1. ANALYSEUR LEXICAL
- * ============================================================ */
-
+/* Fonction interne: avance dans le flux de caractères */
 static void avancer() {
     while (texte[pos] == ' ' || texte[pos] == '\t') pos++;
 
@@ -97,114 +107,34 @@ static void avancer() {
                 tokenCourant.valeur = atof(nombre);
             } else {
                 tokenCourant.type = TOKEN_ERREUR;
-                printf("Erreur: caractere '%c' inattendu a la position %d\n", texte[pos], pos);
+                printf("Erreur: caractère '%c' inattendu à la position %d\n", texte[pos], pos);
                 pos++;
             }
     }
 }
 
+/* Fonction interne: initialise l'analyseur */
 static void initialiserAnalyseur(char *s) {
     texte = s;
     pos = 0;
     avancer();
 }
 
-/* ============================================================
- * 2. GESTION DES MAILLONS (avec support GC)
- * ============================================================ */
-
-POINTEUR allouerMaillon(double coeff, int exposant) {
-    POINTEUR m = (POINTEUR)malloc(sizeof(Maillon));
-    if (m == NULL) {
-        fprintf(stderr, "Erreur: allocation memoire echouee\n");
-        exit(1);
-    }
-    m->coeff = coeff;
-    m->exposant = exposant;
-    m->suivant = NULL;
-    m->utile = 0;
-
-    /* Ajout a la liste de tous les maillons (GC) */
-    m->general = tousLesMaillons;
-    tousLesMaillons = m;
-
-    return m;
-}
-
-/* ============================================================
- * 3. ANALYSEUR SYNTAXIQUE ET CODAGE (Q4)
- * ============================================================ */
-
-/* Insertion d'un monome par ordre decroissant d'exposant (Q4) */
-POINTEUR insererMonome(POINTEUR tete, double coeff, int exposant) {
-    POINTEUR nouveau;
-
-    if (coeff == 0) return tete; /* Ignorer les coefficients nuls */
-
-    nouveau = allouerMaillon(coeff, exposant);
-
-    /* Insertion en tete si liste vide ou exposant plus grand */
-    if (tete == NULL || exposant > tete->exposant) {
-        nouveau->suivant = tete;
-        return nouveau;
-    }
-
-    /* Si meme exposant en tete */
-    if (tete->exposant == exposant) {
-        tete->coeff += coeff;
-        /* Maillon cree devient inutile - on le laisse pour GC (question 7) */
-        tousLesMaillons = tousLesMaillons->general; /* Retirer de la liste GC */
-        free(nouveau);
-
-        /* Si coefficient devient nul, eliminer le monome */
-        if (tete->coeff == 0) {
-            POINTEUR temp = tete;
-            tete = tete->suivant;
-            /* temp reste dans tousLesMaillons pour GC */
-        }
-        return tete;
-    }
-
-    /* Recherche de la position d'insertion */
-    POINTEUR courant = tete;
-    while (courant->suivant != NULL && courant->suivant->exposant > exposant) {
-        courant = courant->suivant;
-    }
-
-    /* Verifier si meme exposant trouve */
-    if (courant->suivant != NULL && courant->suivant->exposant == exposant) {
-        courant->suivant->coeff += coeff;
-        /* Maillon cree devient inutile */
-        tousLesMaillons = tousLesMaillons->general;
-        free(nouveau);
-
-        if (courant->suivant->coeff == 0) {
-            POINTEUR temp = courant->suivant;
-            courant->suivant = temp->suivant;
-        }
-        return tete;
-    }
-
-    /* Insertion au milieu */
-    nouveau->suivant = courant->suivant;
-    courant->suivant = nouveau;
-    return tete;
-}
-
+/* Fonction interne: analyse X^exposant */
 static int analyserXpuissance() {
-    int exposant = 1; /* Par defaut, X = X^1 */
+    int exposant = 1; /* Par défaut, X = X^1 */
 
     if (tokenCourant.type == TOKEN_PUISS) {
         avancer();
         if (tokenCourant.type == TOKEN_NB) {
             exposant = (int)tokenCourant.valeur;
             if (exposant < 0) {
-                printf("Erreur: exposant negatif non autorise\n");
+                printf("Erreur: exposant négatif non autorisé\n");
                 exit(1);
             }
             avancer();
         } else {
-            printf("Erreur: exposant attendu apres '^'\n");
+            printf("Erreur: exposant attendu après '^'\n");
             exit(1);
         }
     }
@@ -212,19 +142,20 @@ static int analyserXpuissance() {
     return exposant;
 }
 
+/* Fonction interne: analyse un monôme */
 static POINTEUR analyserMonome(int signe) {
     double coeff = 1.0;
     int exposant = 0;
     int aCoeff = 0;
     int aX = 0;
 
-    /* Premier element: nombre ou X */
+    /* Premier élément: nombre ou X */
     if (tokenCourant.type == TOKEN_NB) {
         coeff = tokenCourant.valeur;
         aCoeff = 1;
         avancer();
 
-        /* Verifier si * X suit */
+        /* Vérifier si * X suit */
         if (tokenCourant.type == TOKEN_MULT) {
             avancer();
             if (tokenCourant.type == TOKEN_X) {
@@ -232,7 +163,7 @@ static POINTEUR analyserMonome(int signe) {
                 avancer();
                 exposant = analyserXpuissance();
             } else {
-                printf("Erreur: 'X' attendu apres '*'\n");
+                printf("Erreur: 'X' attendu après '*'\n");
                 exit(1);
             }
         }
@@ -242,7 +173,7 @@ static POINTEUR analyserMonome(int signe) {
         avancer();
         exposant = analyserXpuissance();
     } else {
-        printf("Erreur: nombre ou X attendu, trouve token=%d\n", tokenCourant.type);
+        printf("Erreur: nombre ou X attendu\n");
         exit(1);
     }
 
@@ -250,13 +181,17 @@ static POINTEUR analyserMonome(int signe) {
     return insererMonome(NULL, coeff, exposant);
 }
 
+/* 
+ * Q1: Analyseur syntaxique principal
+ * Lit un texte caractère par caractère et reconnaît un polynôme
+ */
 POINTEUR analyserPolynome(char *texte) {
     POINTEUR p = NULL;
     int signeGlobal = 1;
 
     initialiserAnalyseur(texte);
 
-    /* Gerer le signe initial du polynome */
+    /* Gérer le signe initial du polynôme */
     if (tokenCourant.type == TOKEN_MOINS) {
         signeGlobal = -1;
         avancer();
@@ -277,9 +212,102 @@ POINTEUR analyserPolynome(char *texte) {
 }
 
 /* ============================================================
- * 4. AFFICHAGE DES POLYNOMES (Q4)
- * ============================================================ */
+ * QUESTION 2: CODAGE EN MÉMOIRE
+ * Assigné à: IABD 1 - COMPLÉTÉ ✓
+ * Structure: Liste chaînée ordonnée par exposant décroissant
+ * ============================================================
 
+/*
+ * Q2: Alloue un nouveau maillon
+ * Crée un monôme avec coefficient et exposant
+ */
+POINTEUR allouerMaillon(double coeff, int exposant) {
+    POINTEUR m = (POINTEUR)malloc(sizeof(Maillon));
+    if (m == NULL) {
+        fprintf(stderr, "Erreur: allocation mémoire échouée\n");
+        exit(1);
+    }
+    m->coeff = coeff;
+    m->exposant = exposant;
+    m->suivant = NULL;
+    m->utile = 0;
+
+    /* Pour Q6 (Garbage Collector) - géré par SysSec 2
+     * m->general = tousLesMaillons;
+     * tousLesMaillons = m;
+     */
+
+    return m;
+}
+
+/*
+ * Q2: Insertion par ordre décroissant d'exposant
+ * Si même exposant existe, additionne les coefficients
+ */
+POINTEUR insererMonome(POINTEUR tete, double coeff, int exposant) {
+    POINTEUR nouveau;
+
+    if (coeff == 0) return tete; /* Ignorer les coefficients nuls */
+
+    nouveau = allouerMaillon(coeff, exposant);
+
+    /* Insertion en tête si liste vide ou exposant plus grand */
+    if (tete == NULL || exposant > tete->exposant) {
+        nouveau->suivant = tete;
+        return nouveau;
+    }
+
+    /* Si même exposant en tête */
+    if (tete->exposant == exposant) {
+        tete->coeff += coeff;
+        /* Maillon créé devient inutile */
+        tousLesMaillons = tousLesMaillons->general;
+        free(nouveau);
+
+        /* Si coefficient devient nul, éliminer le monôme */
+        if (tete->coeff == 0) {
+            POINTEUR temp = tete;
+            tete = tete->suivant;
+        }
+        return tete;
+    }
+
+    /* Recherche de la position d'insertion */
+    POINTEUR courant = tete;
+    while (courant->suivant != NULL && courant->suivant->exposant > exposant) {
+        courant = courant->suivant;
+    }
+
+    /* Vérifier si même exposant trouvé */
+    if (courant->suivant != NULL && courant->suivant->exposant == exposant) {
+        courant->suivant->coeff += coeff;
+        /* Maillon créé devient inutile */
+        tousLesMaillons = tousLesMaillons->general;
+        free(nouveau);
+
+        if (courant->suivant->coeff == 0) {
+            POINTEUR temp = courant->suivant;
+            courant->suivant = temp->suivant;
+        }
+        return tete;
+    }
+
+    /* Insertion au milieu */
+    nouveau->suivant = courant->suivant;
+    courant->suivant = nouveau;
+    return tete;
+}
+
+/* ============================================================
+ * QUESTION 3: AFFICHAGE
+ * Assigné à: IABD 1 - COMPLÉTÉ ✓
+ * Format: "3.00X^2 + 2.00X - 1.00"
+ * ============================================================
+
+/*
+ * Q3: Affichage formaté d'un polynôme
+ * Affiche sous la forme: coefficientX^exposant + coefficientX^exposant ...
+ */
 void afficherPolynome(POINTEUR p) {
     if (p == NULL) {
         printf("0");
@@ -310,223 +338,184 @@ void afficherPolynome(POINTEUR p) {
 }
 
 /* ============================================================
- * QUESTION 5: EVALUATION
- * ============================================================ */
+ * QUESTION 4: ÉVALUATION
+ * Assigné à: Telecom Réseau - À IMPLÉMENTER ⏳
+ * ============================================================
+ * Objectif: Calculer P(x) pour un x donné
+ * Formule: Σ(coeff * x^exposant)
+ */
 
 double eval(POINTEUR p, double x) {
+    /* TODO Q4: IMPLÉMENTER PAR Telecom Réseau
+     * Indice: Parcourir la liste et sommer coeff * pow(x, exposant)
+     * 
+     * Exemple: P(X) = 3X^2 + 2X - 1
+     * eval(P, 2) = 3*2^2 + 2*2 - 1 = 12 + 4 - 1 = 15
+     */
+    
+    /* Placeholder - À remplacer par l'implémentation réelle */
+    (void)p; /* Pour éviter le warning */
+    (void)x; /* Pour éviter le warning */
+    
+    /* Telecom Réseau: Implémentez ici! */
+    /* 
     double resultat = 0.0;
     while (p != NULL) {
         resultat += p->coeff * pow(x, p->exposant);
         p = p->suivant;
     }
     return resultat;
+    */
+    
+    return 0.0; /* TEMPORAIRE - À SUPPRIMER */
 }
 
 /* ============================================================
- * QUESTION 6: OPERATIONS ARITHMETIQUES
- * ============================================================ */
+ * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES
+ * ============================================================
+ */
 
-/* Addition de deux polynomes */
+/*
+ * Q5a: ADDITION
+ * Assigné à: IABD 2 - À IMPLÉMENTER ⏳
+ * Objectif: Calculer a + b
+ */
 POINTEUR plus(POINTEUR a, POINTEUR b) {
-    POINTEUR resultat = NULL;
-
-    /* Parcourir les deux polynomes simultanement */
-    while (a != NULL && b != NULL) {
-        if (a->exposant > b->exposant) {
-            resultat = insererMonome(resultat, a->coeff, a->exposant);
-            a = a->suivant;
-        } else if (a->exposant < b->exposant) {
-            resultat = insererMonome(resultat, b->coeff, b->exposant);
-            b = b->suivant;
-        } else {
-            /* Meme exposant : additionner les coefficients */
-            resultat = insererMonome(resultat, a->coeff + b->coeff, a->exposant);
-            a = a->suivant;
-            b = b->suivant;
-        }
-    }
-
-    /* Ajouter les monomes restants de a */
-    while (a != NULL) {
-        resultat = insererMonome(resultat, a->coeff, a->exposant);
-        a = a->suivant;
-    }
-
-    /* Ajouter les monomes restants de b */
-    while (b != NULL) {
-        resultat = insererMonome(resultat, b->coeff, b->exposant);
-        b = b->suivant;
-    }
-
-    return resultat;
+    /* TODO Q5a: IMPLÉMENTER PAR IABD 2
+     * Indice: Fusionner deux listes triées (décroissant)
+     * Additionner coefficients si même exposant
+     */
+    
+    /* Placeholder - À remplacer */
+    (void)a;
+    (void)b;
+    
+    /* IABD 2: Implémentez ici! */
+    
+    return NULL; /* TEMPORAIRE - À SUPPRIMER */
 }
 
-/* Soustraction de deux polynomes */
+/*
+ * Q5b: SOUSTRACTION
+ * Assigné à: IABD 2 - À IMPLÉMENTER ⏳
+ * Objectif: Calculer a - b
+ */
 POINTEUR moins(POINTEUR a, POINTEUR b) {
-    POINTEUR resultat = NULL;
-
-    /* Parcourir les deux polynomes simultanement */
-    while (a != NULL && b != NULL) {
-        if (a->exposant > b->exposant) {
-            resultat = insererMonome(resultat, a->coeff, a->exposant);
-            a = a->suivant;
-        } else if (a->exposant < b->exposant) {
-            resultat = insererMonome(resultat, -b->coeff, b->exposant);
-            b = b->suivant;
-        } else {
-            /* Meme exposant : soustraire les coefficients */
-            resultat = insererMonome(resultat, a->coeff - b->coeff, a->exposant);
-            a = a->suivant;
-            b = b->suivant;
-        }
-    }
-
-    /* Ajouter les monomes restants de a */
-    while (a != NULL) {
-        resultat = insererMonome(resultat, a->coeff, a->exposant);
-        a = a->suivant;
-    }
-
-    /* Soustraire les monomes restants de b */
-    while (b != NULL) {
-        resultat = insererMonome(resultat, -b->coeff, b->exposant);
-        b = b->suivant;
-    }
-
-    return resultat;
+    /* TODO Q5b: IMPLÉMENTER PAR IABD 2
+     * Indice: Similaire à l'addition mais avec signes négatifs
+     */
+    
+    /* Placeholder - À remplacer */
+    (void)a;
+    (void)b;
+    
+    /* IABD 2: Implémentez ici! */
+    
+    return NULL; /* TEMPORAIRE - À SUPPRIMER */
 }
 
-/* Multiplication de deux polynomes */
+/*
+ * Q5c: MULTIPLICATION
+ * Assigné à: SysSec 1 - À IMPLÉMENTER ⏳
+ * Objectif: Calculer a * b
+ */
 POINTEUR fois(POINTEUR a, POINTEUR b) {
-    POINTEUR resultat = NULL;
-    POINTEUR tempA = a;
-    POINTEUR tempB;
-
-    while (tempA != NULL) {
-        tempB = b;
-        while (tempB != NULL) {
-            double nouveauCoeff = tempA->coeff * tempB->coeff;
-            int nouvelExposant = tempA->exposant + tempB->exposant;
-            resultat = insererMonome(resultat, nouveauCoeff, nouvelExposant);
-            tempB = tempB->suivant;
-        }
-        tempA = tempA->suivant;
-    }
-
-    return resultat;
+    /* TODO Q5c: IMPLÉMENTER PAR SysSec 1
+     * Indice: Double boucle (distributivité)
+     * (a+b)*(c+d) = ac + ad + bc + bd
+     * Multiplier coefficients et additionner exposants
+     */
+    
+    /* Placeholder - À remplacer */
+    (void)a;
+    (void)b;
+    
+    /* SysSec 1: Implémentez ici! */
+    
+    return NULL; /* TEMPORAIRE - À SUPPRIMER */
 }
 
-/* Division euclidienne: quotient et reste */
+/*
+ * Q5d: DIVISION EUCLIDIENNE
+ * Assigné à: SysSec 1 - À IMPLÉMENTER ⏳
+ * Objectif: Calculer quotient et reste
+ * Algorithme: Division polynomiale classique
+ *         a = b * quotient + reste
+ */
 POINTEUR quotient(POINTEUR a, POINTEUR b, POINTEUR *reste) {
-    POINTEUR q = NULL;
-    POINTEUR r = NULL;
-    POINTEUR temp;
-
-    /* Copier le dividende a dans r */
-    temp = a;
-    while (temp != NULL) {
-        r = insererMonome(r, temp->coeff, temp->exposant);
-        temp = temp->suivant;
-    }
-
-    /* Verifier que le diviseur n'est pas nul */
-    if (b == NULL) {
-        fprintf(stderr, "Erreur: division par un polynome nul\n");
-        exit(1);
-    }
-
-    /* Algorithme de division euclidienne */
-    while (r != NULL && r->exposant >= b->exposant) {
-        double coeffQuotient = r->coeff / b->coeff;
-        int exposantQuotient = r->exposant - b->exposant;
-
-        /* Ajouter le terme au quotient */
-        q = insererMonome(q, coeffQuotient, exposantQuotient);
-
-        /* Soustraire (b * terme_quotient) de r */
-        POINTEUR terme = NULL;
-        terme = insererMonome(terme, coeffQuotient, exposantQuotient);
-        POINTEUR produit = fois(b, terme);
-        POINTEUR nouveauR = moins(r, produit);
-
-        /* Mettre a jour r */
-        r = nouveauR;
-    }
-
-    *reste = r;
-    return q;
+    /* TODO Q5d: IMPLÉMENTER PAR SysSec 1
+     * Indice: Algorithme similaire à la division entière
+     * Tant que deg(reste) >= deg(b):
+     *   terme = coeff_reste / coeff_b, exp_reste - exp_b
+     *   quotient = quotient + terme
+     *   reste = reste - (b * terme)
+     */
+    
+    /* Placeholder - À remplacer */
+    (void)a;
+    (void)b;
+    
+    /* SysSec 1: Implémentez ici! */
+    
+    *reste = NULL; /* TEMPORAIRE - À SUPPRIMER */
+    return NULL;    /* TEMPORAIRE - À SUPPRIMER */
 }
 
 /* ============================================================
- * QUESTION 7: GARBAGE COLLECTOR
- * ============================================================ */
+ * QUESTION 6: GARBAGE COLLECTOR
+ * Assigné à: SysSec 2 - À IMPLÉMENTER ⏳
+ * ============================================================
+ * Algorithme: Mark and Sweep
+ * 1. Marquer tous les maillons accessibles depuis polyUtile[]
+ * 2. Libérer les maillons non marqués
+ */
 
-/* Marque recursivement tous les maillons accessibles depuis un polynome */
-static void marquerPolynome(POINTEUR p) {
-    while (p != NULL) {
-        p->utile = 1;
-        p = p->suivant;
-    }
-}
-
-/* Marque tous les maillons accessibles depuis les polynomes utiles */
+/*
+ * Q6a: Marquer les maillons utiles
+ */
 void marquerUtiles(void) {
-    /* Reinitialiser tous les marquages */
-    POINTEUR courant = tousLesMaillons;
-    while (courant != NULL) {
-        courant->utile = 0;
-        courant = courant->general;
-    }
-
-    /* Marquer les polynomes utiles */
-    int i;
-    for (i = 0; i < nbPolyUtiles; i++) {
-        marquerPolynome(polyUtile[i]);
-    }
+    /* TODO Q6a: IMPLÉMENTER PAR SysSec 2
+     * Indice: Parcourir récursivement depuis chaque polyUtile[]
+     * Mettre utile = 1 pour les maillons accessibles
+     */
+    
+    /* SysSec 2: Implémentez ici! */
 }
 
-/* Libere les maillons non marques */
+/*
+ * Q6b: Libérer les maillons non marqués
+ */
 void libererInutiles(void) {
-    POINTEUR courant = tousLesMaillons;
-    POINTEUR precedent = NULL;
-
-    while (courant != NULL) {
-        if (courant->utile == 0) {
-            /* Maillon non utilise : le liberer */
-            POINTEUR aLiberer = courant;
-            courant = courant->general;
-
-            if (precedent == NULL) {
-                tousLesMaillons = courant;
-            } else {
-                precedent->general = courant;
-            }
-
-            free(aLiberer);
-        } else {
-            /* Maillon utilise : garder */
-            precedent = courant;
-            courant = courant->general;
-        }
-    }
+    /* TODO Q6b: IMPLÉMENTER PAR SysSec 2
+     * Indice: Parcourir tousLesMaillons et free() si utile == 0
+     * Mettre à jour les liens dans la liste générale
+     */
+    
+    /* SysSec 2: Implémentez ici! */
 }
 
-/* Fonction principale du GC */
+/*
+ * Q6c: Fonction principale du GC
+ */
 void garbageCollector(void) {
-    marquerUtiles();
-    libererInutiles();
+    /* TODO Q6c: IMPLÉMENTER PAR SysSec 2
+     * Indice: Appeler marquerUtiles() puis libererInutiles()
+     */
+    
+    /* SysSec 2: Implémentez ici! */
 }
 
 /* ============================================================
- * UTILITAIRES
- * ============================================================ */
+ * UTILITAIRES (optionnels)
+ * ============================================================
+ */
 
 void ajouterPolyUtile(POINTEUR p) {
     if (nbPolyUtiles < 100) {
         polyUtile[nbPolyUtiles] = p;
         nbPolyUtiles++;
     } else {
-        fprintf(stderr, "Erreur: trop de polynomes utiles\n");
+        fprintf(stderr, "Erreur: trop de polynômes utiles\n");
     }
 }
 
@@ -539,7 +528,6 @@ void libererPolynome(POINTEUR p) {
     int i, j;
     for (i = 0; i < nbPolyUtiles; i++) {
         if (polyUtile[i] == p) {
-            /* Decaler les elements */
             for (j = i; j < nbPolyUtiles - 1; j++) {
                 polyUtile[j] = polyUtile[j + 1];
             }

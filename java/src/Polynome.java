@@ -1,7 +1,7 @@
 /**
  * @file Polynome.java
- * @brief Classe représentant un polynôme - Questions 1, 2, 3 complétées
- * @details Structure complète pour les camarades (Questions 4, 5, 6)
+ * @brief Classe représentant un polynôme - Q1, Q2, Q3 COMPLÉTÉES
+ * @details Structure pour les camarades (Q4, Q5, Q6 À IMPLÉMENTER)
  * 
  * QUESTIONS COMPLÉTÉES:
  * - Q1: Analyseur syntaxique (parser)
@@ -9,9 +9,12 @@
  * - Q3: Affichage formaté (toString)
  * 
  * QUESTIONS À IMPLÉMENTER PAR LES CAMARADES:
- * - Q4: Évaluation (eval)
- * - Q5: Opérations arithmétiques
- * - Q6: Garbage Collector (simulation)
+ * - Q4: Évaluation (eval) - Telecom Réseau
+ * - Q5a: Addition (plus) - IABD 2
+ * - Q5b: Soustraction (moins) - IABD 2
+ * - Q5c: Multiplication (fois) - SysSec 1
+ * - Q5d: Division euclidienne (quotient) - SysSec 1
+ * - Q6: Garbage Collector (liberer) - SysSec 2
  */
 
 public class Polynome {
@@ -37,21 +40,6 @@ public class Polynome {
         parser(expression);
     }
 
-    /**
-     * Constructeur de copie
-     * @param autre Autre polynôme à copier
-     */
-    public Polynome(Polynome autre) {
-        this();
-        if (autre != null && autre.tete != null) {
-            Monome courant = autre.tete;
-            while (courant != null) {
-                this.insererMonome(courant.getCoeff(), courant.getExposant());
-                courant = courant.getSuivant();
-            }
-        }
-    }
-
     // Getters et Setters
     public Monome getTete() {
         return tete;
@@ -70,8 +58,8 @@ public class Polynome {
     }
 
     /* ============================================================
-     * QUESTION 1: ANALYSEUR SYNTAXIQUE
-     * Assigné à: IABD 1 - COMPLÉTÉ
+     * QUESTION 1: ANALYSEUR SYNTAXIQUE - COMPLÉTÉ ✓
+     * Assigné à: IABD 1
      * Grammaire respectée:
      *   polynôme → ['-'] monôme { ('+' | '-') monôme }
      *   monôme → nombre '*' xpuissance | xpuissance | nombre
@@ -162,8 +150,8 @@ public class Polynome {
     }
 
     /* ============================================================
-     * QUESTION 2: CODAGE EN MÉMOIRE
-     * Assigné à: IABD 1 - COMPLÉTÉ
+     * QUESTION 2: CODAGE EN MÉMOIRE - COMPLÉTÉ ✓
+     * Assigné à: IABD 1
      * Insertion par ordre décroissant d'exposant
      * ============================================================ */
 
@@ -215,8 +203,8 @@ public class Polynome {
     }
 
     /* ============================================================
-     * QUESTION 3: AFFICHAGE
-     * Assigné à: IABD 1 - COMPLÉTÉ
+     * QUESTION 3: AFFICHAGE - COMPLÉTÉ ✓
+     * Assigné à: IABD 1
      * ============================================================ */
 
     /**
@@ -268,62 +256,123 @@ public class Polynome {
     }
 
     /* ============================================================
-     * QUESTION 4: ÉVALUATION
-     * Assigné à: Telecom Réseau - À IMPLÉMENTER
+     * QUESTION 4: ÉVALUATION - À IMPLÉMENTER ⏳
+     * Assigné à: Telecom Réseau
      * ============================================================
      * Objectif: Calculer P(x) = Σ(coeff * x^exposant)
      */
 
     /**
      * Évalue le polynôme pour une valeur donnée de x
-     * TODO Q4: À IMPLÉMENTER
+     * TODO Q4: À IMPLÉMENTER PAR Telecom Réseau
      * @param x Valeur de la variable
      * @return Valeur du polynôme évalué en x
      */
     public double eval(double x) {
-        // TODO Q4: Implémenter l'évaluation
-        // Indice: Parcourir la liste et sommer coeff * Math.pow(x, exposant)
-        return 0.0;
+        /* TODO Q4: IMPLÉMENTER PAR Telecom Réseau
+         * Indice: Parcourir la liste et sommer coeff * Math.pow(x, exposant)
+         * 
+         * Exemple: P(X) = 3X^2 + 2X - 1
+         * eval(2) = 3*2^2 + 2*2 - 1 = 12 + 4 - 1 = 15
+         */
+        
+        /* Placeholder - À remplacer par l'implémentation réelle */
+        throw new UnsupportedOperationException("Q4: À implémenter par Telecom Réseau");
+        
+        /* Telecom Réseau: Implémentez ici!
+        double resultat = 0.0;
+        Monome courant = tete;
+        while (courant != null) {
+            resultat += courant.evaluer(x);
+            courant = courant.getSuivant();
+        }
+        return resultat;
+        */
     }
 
     /* ============================================================
-     * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES
-     * Assignés à: IABD 2 (Q5a, Q5b), SysSec 1 (Q5c, Q5d)
-     * ============================================================ */
+     * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES - À IMPLÉMENTER ⏳
+     * ============================================================
+     */
 
     /**
      * Additionne deux polynômes
-     * TODO Q5a: À IMPLÉMENTER (IABD 2)
+     * TODO Q5a: À IMPLÉMENTER PAR IABD 2
      * @param autre Autre polynôme à additionner
      * @return Nouveau polynôme résultat
      */
     public Polynome plus(Polynome autre) {
-        // TODO Q5a: Implémenter l'addition
-        // Indice: Fusionner deux listes triées
-        return new Polynome();
+        /* TODO Q5a: IMPLÉMENTER PAR IABD 2
+         * Indice: Fusionner deux listes triées (décroissant)
+         * Additionner coefficients si même exposant
+         */
+        
+        /* Placeholder - À remplacer */
+        throw new UnsupportedOperationException("Q5a: À implémenter par IABD 2");
+        
+        /* IABD 2: Implémentez ici!
+        Polynome resultat = new Polynome();
+        Monome p1 = this.tete;
+        Monome p2 = autre.tete;
+        
+        while (p1 != null && p2 != null) {
+            if (p1.getExposant() > p2.getExposant()) {
+                resultat.insererMonome(p1.getCoeff(), p1.getExposant());
+                p1 = p1.getSuivant();
+            } else if (p1.getExposant() < p2.getExposant()) {
+                resultat.insererMonome(p2.getCoeff(), p2.getExposant());
+                p2 = p2.getSuivant();
+            } else {
+                resultat.insererMonome(p1.getCoeff() + p2.getCoeff(), p1.getExposant());
+                p1 = p1.getSuivant();
+                p2 = p2.getSuivant();
+            }
+        }
+        
+        while (p1 != null) {
+            resultat.insererMonome(p1.getCoeff(), p1.getExposant());
+            p1 = p1.getSuivant();
+        }
+        
+        while (p2 != null) {
+            resultat.insererMonome(p2.getCoeff(), p2.getExposant());
+            p2 = p2.getSuivant();
+        }
+        
+        return resultat;
+        */
     }
 
     /**
      * Soustrait deux polynômes
-     * TODO Q5b: À IMPLÉMENTER (IABD 2)
+     * TODO Q5b: À IMPLÉMENTER PAR IABD 2
      * @param autre Autre polynôme à soustraire
      * @return Nouveau polynôme résultat
      */
     public Polynome moins(Polynome autre) {
-        // TODO Q5b: Implémenter la soustraction
-        return new Polynome();
+        /* TODO Q5b: IMPLÉMENTER PAR IABD 2
+         * Indice: Similaire à l'addition mais avec signes négatifs
+         */
+        
+        /* Placeholder - À remplacer */
+        throw new UnsupportedOperationException("Q5b: À implémenter par IABD 2");
     }
 
     /**
      * Multiplie deux polynômes
-     * TODO Q5c: À IMPLÉMENTER (SysSec 1)
+     * TODO Q5c: À IMPLÉMENTER PAR SysSec 1
      * @param autre Autre polynôme à multiplier
      * @return Nouveau polynôme résultat
      */
     public Polynome fois(Polynome autre) {
-        // TODO Q5c: Implémenter la multiplication
-        // Indice: Double boucle (distributivité)
-        return new Polynome();
+        /* TODO Q5c: IMPLÉMENTER PAR SysSec 1
+         * Indice: Double boucle (distributivité)
+         * (a+b)*(c+d) = ac + ad + bc + bd
+         * Multiplier coefficients et additionner exposants
+         */
+        
+        /* Placeholder - À remplacer */
+        throw new UnsupportedOperationException("Q5c: À implémenter par SysSec 1");
     }
 
     /**
@@ -341,23 +390,32 @@ public class Polynome {
 
     /**
      * Division euclidienne de deux polynômes
-     * TODO Q5d: À IMPLÉMENTER (SysSec 1)
+     * TODO Q5d: À IMPLÉMENTER PAR SysSec 1
      * @param diviseur Polynôme diviseur
      * @return Résultat contenant quotient et reste
      * @throws ArithmeticException si division par polynôme nul
      */
     public ResultatDivision quotient(Polynome diviseur) {
-        // TODO Q5d: Implémenter la division euclidienne
-        // a = b * quotient + reste
+        /* TODO Q5d: IMPLÉMENTER PAR SysSec 1
+         * a = b * quotient + reste
+         * Algorithme:
+         * Tant que deg(reste) >= deg(diviseur):
+         *   terme = coeff_reste / coeff_diviseur, exp_reste - exp_diviseur
+         *   quotient = quotient + terme
+         *   reste = reste - (diviseur * terme)
+         */
+        
         if (diviseur.estNul()) {
             throw new ArithmeticException("Division par un polynôme nul");
         }
-        return new ResultatDivision(new Polynome(), new Polynome());
+        
+        /* Placeholder - À remplacer */
+        throw new UnsupportedOperationException("Q5d: À implémenter par SysSec 1");
     }
 
     /* ============================================================
-     * QUESTION 6: GARBAGE COLLECTOR
-     * Assigné à: SysSec 2 - À IMPLÉMENTER
+     * QUESTION 6: GARBAGE COLLECTOR - À IMPLÉMENTER ⏳
+     * Assigné à: SysSec 2
      * ============================================================
      * En Java, le GC est automatique, mais on peut simuler:
      * - Marquer comme libérable: this.tete = null
@@ -366,11 +424,21 @@ public class Polynome {
 
     /**
      * Marque le polynôme comme pouvant être libéré
-     * TODO Q6: À IMPLÉMENTER (SysSec 2)
+     * TODO Q6: À IMPLÉMENTER PAR SysSec 2
      */
     public void liberer() {
-        // TODO Q6: Marquer le polynôme comme inutilisé
+        /* TODO Q6: IMPLÉMENTER PAR SysSec 2
+         * Indice: Mettre les références à null pour que le GC Java
+         * puisse libérer la mémoire
+         */
+        
+        /* Placeholder - À remplacer */
+        throw new UnsupportedOperationException("Q6: À implémenter par SysSec 2");
+        
+        /* SysSec 2: Implémentez ici!
         this.tete = null;
+        this.expressionOrig = null;
+        */
     }
 
     /**
