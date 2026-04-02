@@ -9,18 +9,39 @@
 
 ---
 
+## 🎯 Status du Projet
+
+### ✅ Questions COMPLÉTÉES (Questions 1, 2, 3)
+
+| Question | Description | Status | Fichier |
+|----------|-------------|--------|---------|
+| **Q1** | Analyseur syntaxique (grammaire) | ✅ COMPLÉTÉ | `c/src/polynome.c` |
+| **Q2** | Codage en mémoire (liste chaînée) | ✅ COMPLÉTÉ | `c/src/polynome.c` |
+| **Q3** | Affichage formaté | ✅ COMPLÉTÉ | `c/src/polynome.c` |
+
+### ⏳ Questions À IMPLÉMENTER (Questions 4, 5, 6)
+
+| Question | Description | Status | Assigné à |
+|----------|-------------|--------|-----------|
+| **Q4** | Évaluation du polynôme | ⏳ À FAIRE | Telecom Réseau |
+| **Q5a** | Addition (+) | ⏳ À FAIRE | IABD 2 |
+| **Q5b** | Soustraction (-) | ⏳ À FAIRE | IABD 2 |
+| **Q5c** | Multiplication (*) | ⏳ À FAIRE | SysSec 1 |
+| **Q5d** | Division euclidienne (/) | ⏳ À FAIRE | SysSec 1 |
+| **Q6** | Garbage Collector | ⏳ À FAIRE | SysSec 2 |
+
+---
+
 ## 👥 Équipe
 
 | Rôle | Nom | Filière | Question Assignée |
 |------|-----|---------|-------------------|
 | 🎯 **Lead & Merge** | [Toi] | [Ta filière] | Gestion dépôt, review, rapport |
-| 💻 **Dev 1** | [Nom 1] | IABD | Q4 - Analyseur & Structure |
-| 💻 **Dev 2** | [Nom 2] | IABD | Q6c/Q6d - Multiplication & Division |
-| 📡 **Dev 3** | [Nom 3] | Telecom Réseau | Q5 - Évaluation + Tests |
-| 🔒 **Dev 4** | [Nom 4] | Système Sécurité | Q6a/Q6b - Addition & Soustraction |
-| 🔒 **Dev 5** | [Nom 5] | Système Sécurité | Q7 - Garbage Collector |
-
-📋 **Détails complets** : Voir [`ASSIGNATION.md`](ASSIGNATION.md)
+| 💻 **IABD 1** | [Nom 1] | IABD | **Q1, Q2, Q3** ✅ (COMPLÉTÉES) |
+| 📡 **Telecom** | [Nom 3] | Telecom Réseau | **Q4** - Évaluation |
+| 💻 **IABD 2** | [Nom 2] | IABD | **Q5a, Q5b** - Addition/Soustraction |
+| 🔒 **SysSec 1** | [Nom 4] | Système Sécurité | **Q5c, Q5d** - Multiplication/Division |
+| 🔒 **SysSec 2** | [Nom 5] | Système Sécurité | **Q6** - Garbage Collector |
 
 ---
 
@@ -30,172 +51,183 @@
 projet/
 ├── c/
 │   ├── include/
-│   │   └── polynome.h          # Déclarations des fonctions
+│   │   └── polynome.h          # ✅ Déclarations (toutes questions)
 │   ├── src/
-│   │   └── polynome.c          # Implémentation (à compléter)
-│   └── tests/                  # Tests par question
-│       ├── test_q4.c
-│       ├── test_q5.c
-│       └── ...
+│   │   ├── polynome.c          # ✅ Q1,Q2,Q3 COMPLÉTÉES
+│   │   │                          # ⏳ Q4,Q5,Q6 À IMPLÉMENTER
+│   │   └── main.c              # ✅ Tests Q1,Q2,Q3
+│   └── Makefile
 ├── java/
 │   └── src/
-│       ├── Monome.java          # Classe de base
-│       ├── Polynome.java        # Classe principale (à compléter)
-│       └── Main.java            # Tests (à compléter)
+│       ├── Monome.java          # ✅ Classe de base
+│       ├── Polynome.java        # ✅ Q1,Q2,Q3 COMPLÉTÉES
+│       │                           # ⏳ Q4,Q5,Q6 À IMPLÉMENTER
+│       └── Main.java            # ✅ Tests Q1,Q2,Q3
 ├── .gitignore
-├── ASSIGNATION.md               # Répartition des tâches
-└── README.md                    # Ce fichier
+├── ASSIGNATION.md               # ⏳ À REMPLIR
+└── README.md                    # ✅ Ce fichier
 ```
 
 ---
 
-## 🚀 Questions à Implémenter
+## 🚀 Questions COMPLÉTÉES (Base pour vos camarades)
 
-| Question | Fonction C | Méthode Java | Description | Assigné à |
-|----------|------------|--------------|-------------|-----------|
-| **Q4** | `analyserPolynome()` | `Polynome(String)` | Parser une chaîne en polynôme | IABD 1 |
-| **Q4** | `insererMonome()` | `insererMonome()` | Insertion ordonnée | IABD 1 |
-| **Q4** | `afficherPolynome()` | `toString()` | Affichage formaté | IABD 1 |
-| **Q5** | `eval()` | `eval()` | Évaluation P(x) | Telecom |
-| **Q6a** | `plus()` | `plus()` | Addition | SysSec 1 |
-| **Q6b** | `moins()` | `moins()` | Soustraction | SysSec 1 |
-| **Q6c** | `fois()` | `fois()` | Multiplication | IABD 2 |
-| **Q6d** | `quotient()` | `quotient()` | Division euclidienne | IABD 2 |
-| **Q7** | `garbageCollector()` | `liberer()` | Gestion mémoire | SysSec 2 |
+### ✅ Q1: Analyseur Syntaxique
+
+**Grammaire respectée**:
+```
+polynôme → ['-'] monôme { ('+' | '-') monôme }
+monôme → nombre '*' xpuissance | xpuissance | nombre
+xpuissance → 'X' | 'X' '^' naturel
+naturel → chiffre { chiffre }
+nombre → naturel [ '.' { chiffre } ]
+```
+
+**Fonction**: `analyserPolynome(char *texte)`
+
+### ✅ Q2: Codage en Mémoire
+
+**Structure**: Liste chaînée ordonnée par exposant décroissant
+
+**Fonction**: `insererMonome(POINTEUR tete, double coeff, int exposant)`
+
+### ✅ Q3: Affichage
+
+**Format**: `"3.00X^2 + 2.00X - 1.00"`
+
+**Fonction**: `afficherPolynome(POINTEUR p)`
 
 ---
 
-## 🔄 Workflow Git
+## ⏳ Questions À IMPLÉMENTER
 
-### 1️⃣ Fork le repository
+### Q4: Évaluation (Telecom)
 
-Cliquez sur le bouton **Fork** en haut à droite du repo.
+```c
+double eval(POINTEUR p, double x);
+```
+**Formule**: P(x) = Σ(coeff × x^exposant)
 
-### 2️⃣ Cloner VOTRE fork
+### Q5: Opérations Arithmétiques
 
-```bash
-git clone https://github.com/[VOTRE_USERNAME]/polynomes-dic2.git
-cd polynomes-dic2
+```c
+// Q5a: Addition (IABD 2)
+POINTEUR plus(POINTEUR a, POINTEUR b);
+
+// Q5b: Soustraction (IABD 2)
+POINTEUR moins(POINTEUR a, POINTEUR b);
+
+// Q5c: Multiplication (SysSec 1)
+POINTEUR fois(POINTEUR a, POINTEUR b);
+
+// Q5d: Division euclidienne (SysSec 1)
+POINTEUR quotient(POINTEUR a, POINTEUR b, POINTEUR *reste);
 ```
 
-### 3️⃣ Créer une branche pour votre question
+### Q6: Garbage Collector (SysSec 2)
 
-```bash
-git checkout -b q[NUM]-[votre-nom]
-# Exemple: git checkout -b q4-ahmed
+```c
+void marquerUtiles(void);
+void libererInutiles(void);
+void garbageCollector(void);
 ```
 
-### 4️⃣ Implémenter votre question
-
-Modifiez les fichiers assignés dans [`ASSIGNATION.md`](ASSIGNATION.md)
-
-### 5️⃣ Commit et Push
-
-```bash
-git add .
-git commit -m "Q[NUM]: Implémentation de [fonction] - [Nom]"
-git push origin q[NUM]-[votre-nom]
-```
-
-### 6️⃣ Créer une Pull Request
-
-1. Allez sur GitHub
-2. Cliquez sur **Compare & pull request**
-3. Titre : `Q[NUM]: [Description] - [Nom]`
-4. Décrivez ce que vous avez fait
-5. Assignez le Lead comme reviewer
+**Algorithme**: Mark and Sweep
 
 ---
 
 ## 🛠️ Compilation
 
-### C
+### C - Questions 1, 2, 3
 
 ```bash
-# Compiler
-cd c
-make
-
-# Ou manuellement
-gcc -o polynome src/polynome.c tests/test_main.c -I include -lm
-
-# Exécuter
+cd c/src
+gcc -o polynome main.c polynome.c -I../include -lm
 ./polynome
 ```
 
-### Java
+### Java - Questions 1, 2, 3
 
 ```bash
-# Compiler
 cd java/src
 javac *.java
-
-# Exécuter
 java Main
 ```
 
 ---
 
-## 📝 Exemple d'Utilisation
+## 🔄 Workflow pour les 5 développeurs
 
-### C
+### 1️⃣ Fork le repository
+
+```bash
+# Cliquez sur Fork sur GitHub
+git clone https://github.com/[VOTRE_USERNAME]/polynomes-dic2.git
+cd polynomes-dic2
+```
+
+### 2️⃣ Créer votre branche
+
+```bash
+# Telecom (Q4)
+git checkout -b q4-evaluation-telecom
+
+# IABD 2 (Q5a,b)
+git checkout -b q5-addition-soustraction-iabd2
+
+# SysSec 1 (Q5c,d)
+git checkout -b q5-multiplication-division-syssec1
+
+# SysSec 2 (Q6)
+git checkout -b q6-garbage-collector-syssec2
+```
+
+### 3️⃣ Implémenter votre question
+
+**Important**: Les fonctions Q1, Q2, Q3 sont déjà là, utilisez-les!
 
 ```c
-#include "polynome.h"
-
-int main() {
-    // Q4: Créer un polynôme
-    POINTEUR p1 = analyserPolynome("3X^2 + 2X - 1");
-    afficherPolynome(p1);  // "3.00X^2 + 2.00X - 1.00"
-    
-    // Q5: Évaluer
-    double val = eval(p1, 2.0);  // 15.0
-    
-    // Q6: Opérations
-    POINTEUR p2 = analyserPolynome("X + 1");
-    POINTEUR somme = plus(p1, p2);
-    
-    // Q7: Cleanup
-    ajouterPolyUtile(p1);
-    garbageCollector();
-    
-    return 0;
-}
-```
-
-### Java
-
-```java
-public class Main {
-    public static void main(String[] args) {
-        // Q4: Créer un polynôme
-        Polynome p1 = new Polynome("3X^2 + 2X - 1");
-        System.out.println(p1);  // "3.00X^2 + 2.00X - 1.00"
-        
-        // Q5: Évaluer
-        double val = p1.eval(2.0);  // 15.0
-        
-        // Q6: Opérations
-        Polynome p2 = new Polynome("X + 1");
-        Polynome somme = p1.plus(p2);
-        
-        // Q7: Cleanup
-        p1.liberer();
-        System.gc();
+// Exemple pour Q4 (Telecom):
+double eval(POINTEUR p, double x) {
+    double resultat = 0.0;
+    while (p != NULL) {
+        resultat += p->coeff * pow(x, p->exposant);
+        p = p->suivant;
     }
+    return resultat;
 }
 ```
+
+### 4️⃣ Tester
+
+```bash
+# Ajoutez vos tests dans main.c ou créez test_q[Num].c
+gcc -o test_q4 test_q4.c src/polynome.c -I include -lm
+./test_q4
+```
+
+### 5️⃣ Commit et Push
+
+```bash
+git add .
+git commit -m "Q4: Implémentation de eval() - [Votre Nom]"
+git push origin q4-evaluation-telecom
+```
+
+### 6️⃣ Pull Request
+
+Créez une PR vers `kr2m-dev/polynomes-dic2:main`
 
 ---
 
-## ✅ Checklist avant PR
+## 📋 Checklist avant PR
 
-- [ ] Code compilé sans erreurs
-- [ ] Tests passent
+- [ ] Ma question est implémentée
+- [ ] J'utilise les fonctions Q1,Q2,Q3 déjà faites
+- [ ] Compilation sans erreurs
+- [ ] Tests ajoutés et passent
 - [ ] Code commenté
-- [ ] Pas de fichiers inutiles (`.exe`, `.class`, etc.)
-- [ ] Message de commit clair
-- [ ] README mis à jour si nécessaire
+- [ ] Pas de conflits avec main
 
 ---
 
@@ -203,8 +235,8 @@ public class Main {
 
 - [Documentation C](https://devdocs.io/c/)
 - [Documentation Java](https://docs.oracle.com/javase/8/docs/api/)
-- [Guide Git](https://rogerdudler.github.io/git-guide/)
-- [Algorithmes sur les polynômes](https://fr.wikipedia.org/wiki/Algorithme_de_division_polinomiale)
+- [Algorithme de division polynomiale](https://fr.wikipedia.org/wiki/Algorithme_de_division_polinomiale)
+- [Garbage Collector - Mark and Sweep](https://en.wikipedia.org/wiki/Tracing_garbage_collection)
 
 ---
 
@@ -212,26 +244,19 @@ public class Main {
 
 | Date | Événement |
 |------|-----------|
-| Semaine 1 | Setup + Q4 (Structure) |
-| Semaine 2 | Q5 + Q6a/b (Opérations simples) |
-| Semaine 3 | Q6c/d (Opérations complexes) |
-| Semaine 4 | Q7 (GC) + Intégration |
-| **Mi-avril** | **Deadline** |
+| Semaine 1 | ✅ Q1, Q2, Q3 COMPLÉTÉES (Lead) |
+| Semaine 2 | ⏳ Q4 (Telecom) + Q5a,b (IABD 2) |
+| Semaine 3 | ⏳ Q5c,d (SysSec 1) + Q6 (SysSec 2) |
+| Semaine 4 | 🔧 Intégration + Tests + Rapport |
+| **Mi-avril** | **📅 DEADLINE** |
 
 ---
 
 ## 📞 Contact
 
-- **Discord/Slack** : [Lien à ajouter]
-- **Email groupe** : [Email à ajouter]
-- **Issue GitHub** : Pour les bugs techniques
+- **Discord** : [Lien à ajouter]
+- **Lead** : [Ton email]
 
 ---
 
-## 📄 Licence
-
-Ce projet est réalisé dans le cadre du **Mini Projet DIC2**.
-
----
-
-**⭐ Bon courage à toute l'équipe !**
+**Les questions 1, 2, 3 sont prêtes! Vos camarades peuvent forker et commencer!** 🚀
