@@ -58,7 +58,7 @@ static int pos = 0;
 static Token tokenCourant;
 
 /* Fonction interne: avance dans le flux de caractères */
-static void avancer() {
+void avancer() {
     while (texte[pos] == ' ' || texte[pos] == '\t') pos++;
 
     if (texte[pos] == '\0') {
@@ -114,7 +114,7 @@ static void avancer() {
 }
 
 /* Fonction interne: initialise l'analyseur */
-static void initialiserAnalyseur(char *s) {
+void initialiserAnalyseur(char *s) {
     texte = s;
     pos = 0;
     avancer();
@@ -346,28 +346,14 @@ void afficherPolynome(POINTEUR p) {
  */
 
 double eval(POINTEUR p, double x) {
-    /* TODO Q4: IMPLÉMENTER PAR Telecom Réseau
-     * Indice: Parcourir la liste et sommer coeff * pow(x, exposant)
-     * 
-     * Exemple: P(X) = 3X^2 + 2X - 1
-     * eval(P, 2) = 3*2^2 + 2*2 - 1 = 12 + 4 - 1 = 15
-     */
-    
-    /* Placeholder - À remplacer par l'implémentation réelle */
-    (void)p; /* Pour éviter le warning */
-    (void)x; /* Pour éviter le warning */
-    
-    /* Telecom Réseau: Implémentez ici! */
-    /* 
     double resultat = 0.0;
+
     while (p != NULL) {
         resultat += p->coeff * pow(x, p->exposant);
         p = p->suivant;
     }
+
     return resultat;
-    */
-    
-    return 0.0; /* TEMPORAIRE - À SUPPRIMER */
 }
 
 /* ============================================================

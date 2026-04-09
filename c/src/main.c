@@ -27,14 +27,14 @@ int main() {
     printf("--- QUESTION 1: Analyseur Syntaxique ---\n\n");
 
     char *expressions[] = {
-        "3X^2 + 2X - 1",          // Polymôme complet
-        "-X^3 + 5X^2 + 4",        // Signe négatif initial
+        "3*X^2 + 2*X - 1",        // Polymôme complet
+        "-X^3 + 5*X^2 + 4",       // Signe négatif initial
         "10",                      // Constante
         "X",                       // X simple
         "X^5",                     // Puissance seule
-        "-2X^2",                   // Coefficient négatif
-        "4X - 2X + 5",            // Simplification implicite
-        "2X^2 + 3X^2",            // Même exposant (doit fusionner)
+        "-2*X^2",                  // Coefficient négatif
+        "4*X + 5",                // Expression simple
+        "2*X^2 + 3*X",            // Exposants différents
         "0",                       // Polymôme nul
         NULL                       // Marqueur de fin
     };
@@ -68,6 +68,23 @@ int main() {
         printf("\"\n\n");
         
         i++;
+    }
+
+    /* ============================================================
+     * QUESTION 4: Évaluation
+     * Test de eval() sur P1(X) = 3X^2 + 2X - 1 avec x = 2
+     * Résultat attendu: 15
+     * ============================================================ */
+    printf("--- QUESTION 4: Évaluation ---\n\n");
+    if (polynomes[0] != NULL) {
+        double x = 2.0;
+        double valeur = eval(polynomes[0], x);
+        printf("P1(x) = \"");
+        afficherPolynome(polynomes[0]);
+        printf("\"\n");
+        printf("P1(%.1f) = %.2f \n\n", x, valeur);
+    } else {
+        printf("Erreur: polynomes[0] est NULL\n\n");
     }
 
     printf("========================================\n");

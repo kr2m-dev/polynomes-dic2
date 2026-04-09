@@ -269,17 +269,6 @@ public class Polynome {
      * @return Valeur du polynôme évalué en x
      */
     public double eval(double x) {
-        /* TODO Q4: IMPLÉMENTER PAR Telecom Réseau
-         * Indice: Parcourir la liste et sommer coeff * Math.pow(x, exposant)
-         * 
-         * Exemple: P(X) = 3X^2 + 2X - 1
-         * eval(2) = 3*2^2 + 2*2 - 1 = 12 + 4 - 1 = 15
-         */
-        
-        /* Placeholder - À remplacer par l'implémentation réelle */
-        throw new UnsupportedOperationException("Q4: À implémenter par Telecom Réseau");
-        
-        /* Telecom Réseau: Implémentez ici!
         double resultat = 0.0;
         Monome courant = tete;
         while (courant != null) {
@@ -287,7 +276,6 @@ public class Polynome {
             courant = courant.getSuivant();
         }
         return resultat;
-        */
     }
 
     /* ============================================================
