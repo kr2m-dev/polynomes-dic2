@@ -36,14 +36,13 @@ public class Main {
          * TODO: Décommenter après implémentation de Q4
          */
         System.out.println("--- QUESTION 4: Analyseur syntaxique ---\n");
-        // Polynome[] polynomes = new Polynome[expressions.length];
-        // for (int i = 0; i < expressions.length; i++) {
-        //     polynomes[i] = new Polynome(expressions[i]);
-        //     System.out.println("Expression " + (i+1) + ": " + expressions[i]);
-        //     System.out.println("Polynôme " + (i+1) + ": " + polynomes[i]);
-        //     System.out.println();
-        // }
-        System.out.println("[TODO: Implémenter Q4 pour voir les résultats]\n");
+        Polynome[] polynomes = new Polynome[expressions.length];
+        for (int i = 0; i < expressions.length; i++) {
+            polynomes[i] = new Polynome(expressions[i]);
+            System.out.println("Expression " + (i+1) + ": " + expressions[i]);
+            System.out.println("Polynôme " + (i+1) + ": " + polynomes[i]);
+            System.out.println();
+        }
 
         /* ============================================================
          * QUESTION 5: Test d'évaluation
@@ -52,12 +51,14 @@ public class Main {
          * TODO: Décommenter après implémentation de Q5
          */
         System.out.println("--- QUESTION 5: Évaluation ---\n");
-        // if (polynomes[0] != null) {
-        //     double x = 2.0;
-        //     System.out.println("P1(x) = " + polynomes[0]);
-        //     System.out.println("P1(" + x + ") = " + polynomes[0].eval(x));
-        // }
-        System.out.println("[TODO: Implémenter Q5 pour voir les résultats]\n");
+        if (polynomes[0] != null) {
+            double x = 2.0;
+            System.out.println("P1(x) = " + polynomes[0]);
+            System.out.println("P1(" + x + ") = " + polynomes[0].eval(x));
+        } else {
+            System.out.println("Erreur: polynomes[0] est null");
+        }
+        System.out.println();
 
         /* ============================================================
          * QUESTION 6: Test des opérations arithmétiques
