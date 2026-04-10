@@ -229,4 +229,35 @@ POINTEUR copierMonome(POINTEUR m);
  */
 void libererPolynome(POINTEUR p);
 
+/* ============================================================
+ * QUESTION 8: VERSIONS RÉCURSIVES - BONUS
+ * Assigné à: Ame Thiam (TR)
+ * ============================================================
+ * Versions récursives de l'addition et de la soustraction.
+ * Ces implémentations sont plus élégantes mais consomment plus
+ * de mémoire à cause de la récursion.
+ */
+
+/**
+ * @brief Addition récursive de deux polynômes
+ * @param a Premier polynôme
+ * @param b Deuxième polynôme
+ * @return Nouveau polynôme résultat (a + b)
+ * 
+ * @note Version récursive élégante mais moins efficace
+ * @assigné Q8a - BONUS
+ */
+POINTEUR plus_recursif(POINTEUR a, POINTEUR b);
+
+/**
+ * @brief Soustraction récursive de deux polynômes
+ * @param a Premier polynôme
+ * @param b Deuxième polynôme
+ * @return Nouveau polynôme résultat (a - b)
+ * 
+ * @note Version récursive élégante mais moins efficace
+ * @assigné Q8b - BONUS
+ */
+POINTEUR moins_recursif(POINTEUR a, POINTEUR b);
+
 #endif /* POLYNOME_H */

@@ -507,120 +507,170 @@ public class Polynome {
         return new ResultatDivision(q, r);
     }
 
-    /* ============================================================
-     * QUESTION 6: GARBAGE COLLECTOR - À IMPLÉMENTER ⏳
-     * Assigné à: SysSec 2
-     * ============================================================
-     * En Java, le GC est automatique, mais on peut simuler:
-     * - Marquer comme libérable: this.tete = null
-     * - Suggérer GC: System.gc()
-     */
+/* ============================================================
+ * QUESTION 7: GARBAGE COLLECTOR
+ * Implémenté par: [Ton nom] (GLSI - Lead)
+ * ============================================================
+ * 
+ * En Java, le Garbage Collector est automatique, mais on peut
+ * "suggérer" explicitement la libération en mettant les références
+ * à null, rendant les objets éligibles au GC.
+ */
 
-    /**
-     * Q7: Marque le polynôme comme pouvant être libéré
-     * Implémenté par: [Ton nom] (GLSI - Lead)
-     * 
-     * En Java, le Garbage Collector est automatique, mais cette méthode
-     * permet de "suggérer" explicitement la libération en mettant les
-     * références à null, rendant les objets éligibles au GC.
-     * 
-     * Remerciements: Merci à toute l'équipe pour cette collaboration!
-     */
-    public void liberer() {
-        /* Mettre les références à null pour que le GC Java
-         * puisse libérer la mémoire associée */
-        this.tete = null;
-        this.expressionOrig = null;
-        
-        /* Suggérer explicitement au GC de s'exécuter (optionnel) */
-        System.gc();
+/**
+ * Q7: Marque le polynôme comme pouvant être libéré
+ * 
+ * En Java, le Garbage Collector est automatique, mais cette méthode
+ * permet de suggérer explicitement la libération.
+ * 
+ * Remerciements: Merci à toute l'équipe pour cette collaboration!
+ */
+public void liberer() {
+    /* Mettre les références à null pour que le GC Java
+     * puisse libérer la mémoire associée */
+    this.tete = null;
+    this.expressionOrig = null;
+    
+    /* Suggérer explicitement au GC de s'exécuter (optionnel) */
+    System.gc();
+}
+
+/**
+ * Crée une copie profonde du polynôme
+ * @return Une copie du polynôme
+ */
+public Polynome copier() {
+    Polynome copie = new Polynome();
+    Monome courant = this.tete;
+    while (courant != null) {
+        copie.insererMonome(courant.getCoeff(), courant.getExposant());
+        courant = courant.getSuivant();
     }
+    return copie;
+}
 
-    /**
-     * Crée une copie profonde du polynôme
-     * @return Une copie du polynôme
-     */
-    public Polynome copier() {
-        Polynome copie = new Polynome();
-        Monome courant = this.tete;
-        while (courant != null) {
-            copie.insererMonome(courant.getCoeff(), courant.getExposant());
-            courant = courant.getSuivant();
+/* ============================================================
+ * QUESTION 8: VERSIONS RÉCURSIVES - BONUS
+ * Implémenté par: Ame Thiam (TR) ou Lead (GLSI)
+ * ============================================================
+ * 
+ * Versions récursives de l'addition et de la soustraction.
+ * Ces implémentations sont plus élégantes mais consomment plus
+ * de mémoire à cause de la récursion.
+ */
+
+/**
+ * Q8a: Addition récursive (version bonus)
+ * Implémenté par: Ame Thiam (TR) ou Lead (GLSI)
+ * 
+ * Approche récursive élégante:
+ * - Cas de base: si a null, retourner copie de b; si b null, retourner copie de a
+ * - Si a.exposant > b.exposant: créer maillon(a), puis fusionner(a.suivant, b)
+ * - Si a.exposant < b.exposant: créer maillon(b), puis fusionner(a, b.suivant)
+ * - Si même exposant: somme coefficients, puis fusionner(a.suivant, b.suivant)
+ * 
+ * Remerciements: Merci à Ame Thiam pour cette implémentation!
+ * 
+ * @param autre Autre polynôme à additionner
+ * @return Nouveau polynôme résultat
+ */
+public Polynome plusRecursif(Polynome autre) {
+    return plusRecursifAux(this.tete, autre.tete);
+}
+
+/**
+ * Méthode auxiliaire récursive pour l'addition
+ * 
+ * @param a Tête de la première liste
+ * @param b Tête de la deuxième liste
+ * @return Nouveau polynôme résultat
+ */
+private static Polynome plusRecursifAux(Monome a, Monome b) {
+    /* Cas de base: les deux listes vides */
+    if (a == null && b == null) {
+        return new Polynome();
+    }
+    
+    /* Cas: a vide, copier b */
+    if (a == null) {
+        Polynome resultat = new Polynome();
+        resultat.tete = new Monome(b.getCoeff(), b.getExposant());
+        resultat.tete.setSuivant(plusRecursifAux(null, b.getSuivant()).tete);
+        return resultat;
+    }
+    
+    /* Cas: b vide, copier a */
+    if (b == null) {
+        Polynome resultat = new Polynome();
+        resultat.tete = new Monome(a.getCoeff(), a.getExposant());
+        resultat.tete.setSuivant(plusRecursifAux(a.getSuivant(), null).tete);
+        return resultat;
+    }
+    
+    /* Cas 1: exposant de a est supérieur */
+    if (a.getExposant() > b.getExposant()) {
+        Polynome resultat = new Polynome();
+        resultat.tete = new Monome(a.getCoeff(), a.getExposant());
+        resultat.tete.setSuivant(plusRecursifAux(a.getSuivant(), b).tete);
+        return resultat;
+    }
+    
+    /* Cas 2: exposant de b est supérieur */
+    else if (a.getExposant() < b.getExposant()) {
+        Polynome resultat = new Polynome();
+        resultat.tete = new Monome(b.getCoeff(), b.getExposant());
+        resultat.tete.setSuivant(plusRecursifAux(a, b.getSuivant()).tete);
+        return resultat;
+    }
+    
+    /* Cas 3: même exposant */
+    else {
+        double c = a.getCoeff() + b.getCoeff();
+        if (c == 0.0) {
+            /* Sauter les deux monômes si annulation */
+            return plusRecursifAux(a.getSuivant(), b.getSuivant());
         }
-        return copie;
-    }
-
-    /* ============================================================
-     * QUESTION 8: VERSIONS RÉCURSIVES - À IMPLÉMENTER ⏳
-     * Assigné à: Ame Thiam (TR) - BONUS
-     * ============================================================
-     * 
-     * Fonctions bonus: versions récursives de plus() et moins()
-     * Ces implémentations sont plus élégantes mais consomment plus
-     * de mémoire à cause de la récursion.
-     */
-
-    /**
-     * Q8a: Addition récursive (version bonus)
-     * TODO Q8a: À IMPLÉMENTER PAR Ame Thiam
-     * 
-     * Approche récursive élégante pour additionner deux polynômes.
-     * Plus lisible mais moins efficace que la version itérative.
-     * 
-     * @param autre Autre polynôme à additionner
-     * @return Nouveau polynôme résultat
-     */
-    public Polynome plusRecursif(Polynome autre) {
-        /* TODO Q8a: À IMPLÉMENTER PAR Ame Thiam (TR)
-         * 
-         * Approche récursive:
-         * Si liste a vide : retourner copie de b
-         * Si liste b vide : retourner copie de a
-         * Si a->exposant > b->exposant : 
-         *     retourner a + fusion(b, a->suivant)
-         * Si a->exposant < b->exposant :
-         *     retourner b + fusion(a, b->suivant)
-         * Sinon (même exposant) :
-         *     coeff = a->coeff + b->coeff
-         *     retourner maillon(coeff, exposant) + fusion(a->suivant, b->suivant)
-         */
-
-        /* Placeholder - À remplacer par l'implémentation récursive */
-        throw new UnsupportedOperationException("Q8a: À implémenter par Ame Thiam (TR)");
-    }
-
-    /**
-     * Q8b: Soustraction récursive (version bonus)
-     * TODO Q8b: À IMPLÉMENTER PAR Ame Thiam
-     * 
-     * Approche récursive élégante pour soustraire deux polynômes.
-     * 
-     * @param autre Autre polynôme à soustraire
-     * @return Nouveau polynôme résultat
-     */
-    public Polynome moinsRecursif(Polynome autre) {
-        /* TODO Q8b: À IMPLÉMENTER PAR Ame Thiam (TR)
-         * 
-         * Stratégie: a - b = a + (-b)
-         * Appeler plusRecursif() après avoir négautre
-         */
-
-        /* Placeholder - À remplacer */
-        throw new UnsupportedOperationException("Q8b: À implémenter par Ame Thiam (TR)");
+        Polynome resultat = new Polynome();
+        resultat.tete = new Monome(c, a.getExposant());
+        resultat.tete.setSuivant(plusRecursifAux(a.getSuivant(), b.getSuivant()).tete);
+        return resultat;
     }
 }
 
-    /**
-     * Crée une copie profonde du polynôme
-     * @return Une copie du polynôme
-     */
-    public Polynome copier() {
-        Polynome copie = new Polynome();
-        Monome courant = this.tete;
-        while (courant != null) {
-            copie.insererMonome(courant.getCoeff(), courant.getExposant());
-            courant = courant.getSuivant();
-        }
-        return copie;
+/**
+ * Q8b: Soustraction récursive (version bonus)
+ * Implémenté par: Ame Thiam (TR) ou Lead (GLSI)
+ * 
+ * Stratégie: a - b = a + (-b)
+ * Créer une négation de b, puis appeler plusRecursif.
+ * 
+ * Remerciements: Merci à Ame Thiam pour cette implémentation!
+ * 
+ * @param autre Autre polynôme à soustraire
+ * @return Nouveau polynôme résultat
+ */
+public Polynome moinsRecursif(Polynome autre) {
+    /* Créer la négation de b */
+    Polynome negB = negationRecursif(autre.tete);
+    
+    /* Appeler plusRecursif avec a et -b */
+    return this.plusRecursif(negB);
+}
+
+/**
+ * Méthode auxiliaire récursive pour la négation
+ * 
+ * @param p Tête de la liste à négater
+ * @return Nouveau polynôme avec coefficients inversés
+ */
+private static Polynome negationRecursif(Monome p) {
+    if (p == null) {
+        return new Polynome();
     }
+    
+    Polynome resultat = new Polynome();
+    resultat.tete = new Monome(-p.getCoeff(), p.getExposant());
+    resultat.tete.setSuivant(negationRecursif(p.getSuivant()).tete);
+    return resultat;
+}
 }

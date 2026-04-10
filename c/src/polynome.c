@@ -1,16 +1,18 @@
 /**
  * @file polynome.c
- * @brief Implémentation des fonctions de manipulation des polynômes
- * @details Ce fichier contient:
- *          - Q1, Q2, Q3: COMPLÉTÉES (Analyseur, Codage, Affichage)
- *          - Q4, Q5, Q6: À IMPLÉMENTER PAR VOS CAMARADES
+ * @brief Implémentation complète des fonctions de manipulation des polynômes
+ * @details Mini Projet DIC2 - Gestion de Polynômes
  * 
- * INSTRUCTIONS POUR LE GROUPE:
- * - Q1, Q2, Q3: DÉJÀ COMPLÉTÉES (ne pas modifier)
- * - Q4, Q5, Q6: LAISSEZ VIDE avec TODO pour vos camarades
- * - Chaque membre implémente sa question assignée
- * - Ne pas modifier les signatures de fonctions
- * - Tester individuellement avant de merger
+ * QUESTIONS COMPLÉTÉES:
+ * - Q1, Q2, Q3: Analyseur, Codage, Affichage (IABD 1 - GLSI)
+ * - Q4: Codage par degré décroissant (Sokhna Maimouna - SSI)
+ * - Q5: Évaluation (n0reyni/Ousmane Sow - IABD)
+ * - Q6a,b: Addition & Soustraction (Makhtar Gueye - TR)
+ * - Q6c,d: Multiplication & Division (Khadidiatou Niakh - IABD)
+ * - Q7: Garbage Collector (Lead - GLSI)
+ * 
+ * QUESTION EN ATTENTE:
+ * - Q8: Versions récursives (Ame Thiam - TR) - BONUS
  */
 
 #include "../include/polynome.h"
@@ -19,9 +21,9 @@
 #include <math.h>
 
 /* ============================================================
- * VARIABLES GLOBALES (pour Q6 - Garbage Collector)
+ * VARIABLES GLOBALES (pour Q7 - Garbage Collector)
  * ============================================================
- * Gérées par SysSec 2
+ * Gérées par Lead (GLSI)
  */
 POINTEUR tousLesMaillons = NULL;
 POINTEUR polyUtile[100];
@@ -653,4 +655,104 @@ void libererPolynome(POINTEUR p) {
             break;
         }
     }
+}
+
+/* ============================================================
+ * QUESTION 8: VERSIONS RÉCURSIVES - BONUS
+ * Implémenté par: Ame Thiam (TR) ou Lead (GLSI)
+ * ============================================================
+ * 
+ * Versions récursives de l'addition et de la soustraction.
+ * Ces implémentations sont plus élégantes mais consomment plus
+ * de mémoire à cause de la récursion.
+ */
+
+/*
+ * Q8a: Addition récursive (version bonus)
+ * 
+ * Approche récursive élégante:
+ * - Cas de base: si a NULL, retourner copie de b; si b NULL, retourner copie de a
+ * - Si a->exposant > b->exposant: créer maillon(a), puis fusionner(a->suivant, b)
+ * - Si a->exposant < b->exposant: créer maillon(b), puis fusionner(a, b->suivant)
+ * - Si même exposant: somme coefficients, puis fusionner(a->suivant, b->suivant)
+ */
+static POINTEUR plus_recursif_aux(POINTEUR a, POINTEUR b) {
+    /* Cas de base: listes vides */
+    if (a == NULL) return NULL;
+    if (b == NULL) return NULL;
+    
+    /* Cas 1: exposant de a est supérieur */
+    if (a->exposant > b->exposant) {
+        POINTEUR r = allouerMaillon(a->coeff, a->exposant);
+        r->suivant = plus_recursif_aux(a->suivant, b);
+        return r;
+    }
+    /* Cas 2: exposant de b est supérieur */
+    else if (a->exposant < b->exposant) {
+        POINTEUR r = allouerMaillon(b->coeff, b->exposant);
+        r->suivant = plus_recursif_aux(a, b->suivant);
+        return r;
+    }
+    /* Cas 3: même exposant */
+    else {
+        double c = a->coeff + b->coeff;
+        if (c == 0.0) {
+            /* Sauter les deux monômes si annulation */
+            return plus_recursif_aux(a->suivant, b->suivant);
+        }
+        POINTEUR r = allouerMaillon(c, a->exposant);
+        r->suivant = plus_recursif_aux(a->suivant, b->suivant);
+        return r;
+    }
+}
+
+/*
+ * Q8a: Addition récursive (version publique)
+ * 
+ * Version récursive de l'addition.
+ * Plus élégante mais moins efficace que la version itérative.
+ */
+POINTEUR plus_recursif(POINTEUR a, POINTEUR b) {
+    /* Gérer les cas simples */
+    if (a == NULL && b == NULL) return NULL;
+    if (a == NULL) {
+        /* Copier b si a est NULL */
+        if (b == NULL) return NULL;
+        POINTEUR r = allouerMaillon(b->coeff, b->exposant);
+        r->suivant = plus_recursif(NULL, b->suivant);
+        return r;
+    }
+    if (b == NULL) {
+        /* Copier a si b est NULL */
+        POINTEUR r = allouerMaillon(a->coeff, a->exposant);
+        r->suivant = plus_recursif(a->suivant, NULL);
+        return r;
+    }
+    
+    return plus_recursif_aux(a, b);
+}
+
+/*
+ * Q8b: Soustraction récursive (version bonus)
+ * 
+ * Stratégie: a - b = a + (-b)
+ * Créer une négation de b, puis appeler plus_recursif.
+ */
+POINTEUR moins_recursif(POINTEUR a, POINTEUR b) {
+    /* Cas simple: b est NULL */
+    if (b == NULL) {
+        if (a == NULL) return NULL;
+        POINTEUR r = allouerMaillon(a->coeff, a->exposant);
+        r->suivant = moins_recursif(a->suivant, NULL);
+        return r;
+    }
+    
+    /* Créer la négation de b récursivement */
+    POINTEUR neg_b = allouerMaillon(-b->coeff, b->exposant);
+    neg_b->suivant = moins_recursif(NULL, b->suivant);
+    
+    /* Appeler plus_recursif avec a et -b */
+    POINTEUR resultat = plus_recursif(a, neg_b);
+    
+    return resultat;
 }
