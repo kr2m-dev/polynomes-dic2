@@ -446,50 +446,82 @@ static POINTEUR negation(POINTEUR p) {
 }
 
 /*
- * Q5c: MULTIPLICATION
- * Assigné à: SysSec 1 - À IMPLÉMENTER ⏳
- * Objectif: Calculer a * b
+ * Q6c: MULTIPLICATION
+ * Implémenté par: Khadidiatou Niakh (SysSec 1)
+ * 
+ * Algorithme: Double boucle (distributivité)
+ * P × Q = Σ(i) Σ(j) (pi × qj) X^(ei+ej)
+ * 
+ * Pour chaque monôme de a:
+ *   Pour chaque monôme de b:
+ *     Multiplier les coefficients
+ *     Additionner les exposants
+ *     Ajouter au résultat
+ * 
+ * Remerciements: Merci à Khadidiatou Niakh pour cette implémentation!
  */
 POINTEUR fois(POINTEUR a, POINTEUR b) {
-    /* TODO Q5c: IMPLÉMENTER PAR SysSec 1
-     * Indice: Double boucle (distributivité)
-     * (a+b)*(c+d) = ac + ad + bc + bd
-     * Multiplier coefficients et additionner exposants
-     */
-    
-    /* Placeholder - À remplacer */
-    (void)a;
-    (void)b;
-    
-    /* SysSec 1: Implémentez ici! */
-    
-    return NULL; /* TEMPORAIRE - À SUPPRIMER */
+    /* Vérifier que les deux polynômes sont non nuls */
+    if (!a || !b)
+        return NULL;
+
+    POINTEUR resultat = NULL;
+
+    /* Double boucle: distribuer chaque monôme de a sur chaque monôme de b */
+    for (POINTEUR p = a; p != NULL; p = p->suivant) {
+        POINTEUR temp = NULL;
+
+        for (POINTEUR q = b; q != NULL; q = q->suivant) {
+            /* Créer un nouveau monôme: coeff produit, somme exposants */
+            POINTEUR m = allouerMaillon(p->coeff * q->coeff, p->exposant + q->exposant);
+            /* Additionner temporairement (fusionner si même exposant) */
+            temp = plus(temp, m);
+        }
+
+        /* Additionner le résultat partiel au résultat global */
+        resultat = plus(resultat, temp);
+    }
+
+    return resultat;
 }
 
 /*
- * Q5d: DIVISION EUCLIDIENNE
- * Assigné à: SysSec 1 - À IMPLÉMENTER ⏳
- * Objectif: Calculer quotient et reste
+ * Q6d: DIVISION EUCLIDIENNE
+ * Implémenté par: Khadidiatou Niakh (SysSec 1)
+ * 
  * Algorithme: Division polynomiale classique
- *         a = b * quotient + reste
+ * Tant que deg(reste) >= deg(diviseur):
+ *   terme = coeff_reste / coeff_diviseur, exp_reste - exp_diviseur
+ *   quotient = quotient + terme
+ *   reste = reste - (diviseur × terme)
+ * 
+ * Remerciements: Merci à Khadidiatou Niakh pour cette implémentation!
  */
 POINTEUR quotient(POINTEUR a, POINTEUR b, POINTEUR *reste) {
-    /* TODO Q5d: IMPLÉMENTER PAR SysSec 1
-     * Indice: Algorithme similaire à la division entière
-     * Tant que deg(reste) >= deg(b):
-     *   terme = coeff_reste / coeff_b, exp_reste - exp_b
-     *   quotient = quotient + terme
-     *   reste = reste - (b * terme)
-     */
-    
-    /* Placeholder - À remplacer */
-    (void)a;
-    (void)b;
-    
-    /* SysSec 1: Implémentez ici! */
-    
-    *reste = NULL; /* TEMPORAIRE - À SUPPRIMER */
-    return NULL;    /* TEMPORAIRE - À SUPPRIMER */
+    /* Vérifier division par zéro */
+    if (!b)
+        return NULL;
+
+    POINTEUR q = NULL;      /* Quotient */
+    POINTEUR r = a;         /* Reste (initialisé au dividende) */
+
+    /* Algorithme de division euclidienne */
+    while (r && r->exposant >= b->exposant) {
+        /* Calculer le terme du quotient */
+        double coeff = r->coeff / b->coeff;
+        int exposant = r->exposant - b->exposant;
+
+        /* Créer et ajouter le terme au quotient */
+        POINTEUR m = allouerMaillon(coeff, exposant);
+        q = plus(q, m);
+
+        /* Soustraire (diviseur × terme) du reste */
+        POINTEUR temp = fois(m, b);
+        r = moins(r, temp);
+    }
+
+    *reste = r;
+    return q;
 }
 
 /* ============================================================

@@ -407,19 +407,46 @@ public class Polynome {
 
     /**
      * Multiplie deux polynômes
-     * TODO Q5c: À IMPLÉMENTER PAR SysSec 1
+     * Implémenté par: Khadidiatou Niakh (SysSec 1)
+     * 
+     * Algorithme: Double boucle (distributivité)
+     * P × Q = Σ(i) Σ(j) (pi × qj) X^(ei+ej)
+     * 
+     * Pour chaque monôme de a:
+     *   Pour chaque monôme de b:
+     *     Multiplier les coefficients
+     *     Additionner les exposants
+     *     Ajouter au résultat
+     * 
+     * Remerciements: Merci à Khadidiatou Niakh pour cette implémentation!
+     * 
      * @param autre Autre polynôme à multiplier
      * @return Nouveau polynôme résultat
      */
     public Polynome fois(Polynome autre) {
-        /* TODO Q5c: IMPLÉMENTER PAR SysSec 1
-         * Indice: Double boucle (distributivité)
-         * (a+b)*(c+d) = ac + ad + bc + bd
-         * Multiplier coefficients et additionner exposants
-         */
-        
-        /* Placeholder - À remplacer */
-        throw new UnsupportedOperationException("Q5c: À implémenter par SysSec 1");
+        /* Vérifier que les deux polynômes sont non nuls */
+        if (this.estNul() || autre.estNul())
+            return new Polynome();
+
+        Polynome resultat = new Polynome();
+
+        /* Double boucle: distribuer chaque monôme de this sur chaque monôme de autre */
+        for (Monome p = this.tete; p != null; p = p.getSuivant()) {
+            Polynome temp = new Polynome();
+
+            for (Monome q = autre.tete; q != null; q = q.getSuivant()) {
+                /* Créer un nouveau monôme: coeff produit, somme exposants */
+                Monome m = new Monome(p.getCoeff() * q.getCoeff(), p.getExposant() + q.getExposant());
+                
+                /* Insérer dans temp (utilise l'insertion récursive de Q4) */
+                temp.tete = insererTrie(temp.tete, m.getCoeff(), m.getExposant());
+            }
+
+            /* Additionner le résultat partiel au résultat global */
+            resultat = resultat.plus(temp);
+        }
+
+        return resultat;
     }
 
     /**
@@ -437,27 +464,47 @@ public class Polynome {
 
     /**
      * Division euclidienne de deux polynômes
-     * TODO Q5d: À IMPLÉMENTER PAR SysSec 1
+     * Implémenté par: Khadidiatou Niakh (SysSec 1)
+     * 
+     * Algorithme: Division polynomiale classique
+     * Tant que deg(reste) >= deg(diviseur):
+     *   terme = coeff_reste / coeff_diviseur, exp_reste - exp_diviseur
+     *   quotient = quotient + terme
+     *   reste = reste - (diviseur × terme)
+     * 
+     * Remerciements: Merci à Khadidiatou Niakh pour cette implémentation!
+     * 
      * @param diviseur Polynôme diviseur
      * @return Résultat contenant quotient et reste
      * @throws ArithmeticException si division par polynôme nul
      */
     public ResultatDivision quotient(Polynome diviseur) {
-        /* TODO Q5d: IMPLÉMENTER PAR SysSec 1
-         * a = b * quotient + reste
-         * Algorithme:
-         * Tant que deg(reste) >= deg(diviseur):
-         *   terme = coeff_reste / coeff_diviseur, exp_reste - exp_diviseur
-         *   quotient = quotient + terme
-         *   reste = reste - (diviseur * terme)
-         */
-        
+        /* Vérifier division par zéro */
         if (diviseur.estNul()) {
             throw new ArithmeticException("Division par un polynôme nul");
         }
-        
-        /* Placeholder - À remplacer */
-        throw new UnsupportedOperationException("Q5d: À implémenter par SysSec 1");
+
+        Polynome q = new Polynome();      /* Quotient */
+        Polynome r = this.copier();       /* Reste (initialisé au dividende) */
+
+        /* Algorithme de division euclidienne */
+        while (!r.estNul() && r.getDegre() >= diviseur.getDegre()) {
+            /* Calculer le terme du quotient */
+            double coeff = r.tete.getCoeff() / diviseur.tete.getCoeff();
+            int exposant = r.getDegre() - diviseur.getDegre();
+
+            /* Créer et ajouter le terme au quotient */
+            Monome m = new Monome(coeff, exposant);
+            q.tete = insererTrie(q.tete, m.getCoeff(), m.getExposant());
+
+            /* Soustraire (diviseur × terme) du reste */
+            Polynome temp = new Polynome();
+            temp.tete = new Monome(coeff, exposant);
+            Polynome produit = diviseur.fois(temp);
+            r = r.moins(produit);
+        }
+
+        return new ResultatDivision(q, r);
     }
 
     /* ============================================================
