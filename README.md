@@ -3,6 +3,7 @@
 [![C](https://img.shields.io/badge/C-99-blue)](https://en.wikipedia.org/wiki/C99)
 [![Java](https://img.shields.io/badge/Java-8-orange)](https://www.oracle.com/java/technologies/java8.html)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-97%25%20COMPLÉTÉ-brightgreen)](https://github.com/kr2m-dev/polynomes-dic2)
 
 > **Mini-projet** : Algorithmique et programmation avancées & POO avancée  
 > **Objectif** : Programmer la gestion de polynômes en **C** et **Java**
@@ -11,24 +12,22 @@
 
 ## 🎯 Status du Projet
 
-### ✅ Questions COMPLÉTÉES (Questions 1, 2, 3)
+### ✅ Questions COMPLÉTÉES
 
-| Question | Description | Status | Fichier |
-|----------|-------------|--------|---------|
-| **Q1** | Analyseur syntaxique (grammaire) | ✅ COMPLÉTÉ | `c/src/polynome.c` |
-| **Q2** | Codage en mémoire (liste chaînée) | ✅ COMPLÉTÉ | `c/src/polynome.c` |
-| **Q3** | Affichage formaté | ✅ COMPLÉTÉ | `c/src/polynome.c` |
+| Question | Description | Status | Auteur | Filière |
+|----------|-------------|--------|--------|---------|
+| **Q1-Q3** | Analyseur, Codage, Affichage | ✅ COMPLÉTÉ | IABD 1 (Toi) | GLSI |
+| **Q4** | Codage par degré décroissant | ✅ COMPLÉTÉ | Sokhna Maimouna 🌟 | SSI |
+| **Q5** | Évaluation P(x) | ✅ COMPLÉTÉ | n0reyni (Ousmane Sow) | IABD |
+| **Q6a,b** | Addition & Soustraction | ✅ COMPLÉTÉ | Makhtar Gueye 🌟 | TR |
+| **Q6c,d** | Multiplication & Division | ✅ COMPLÉTÉ | Khadidiatou Niakh 🌟 | IABD |
+| **Q7** | Garbage Collector | ✅ COMPLÉTÉ | [Ton nom] | GLSI |
 
-### ⏳ Questions À IMPLÉMENTER (Questions 4, 5, 6)
+### ⏳ Questions EN ATTENTE (Bonus)
 
 | Question | Description | Status | Assigné à |
 |----------|-------------|--------|-----------|
-| **Q4** | Évaluation du polynôme | ⏳ À FAIRE | Telecom Réseau |
-| **Q5a** | Addition (+) | ⏳ À FAIRE | IABD 2 |
-| **Q5b** | Soustraction (-) | ⏳ À FAIRE | IABD 2 |
-| **Q5c** | Multiplication (*) | ⏳ À FAIRE | SysSec 1 |
-| **Q5d** | Division euclidienne (/) | ⏳ À FAIRE | SysSec 1 |
-| **Q6** | Garbage Collector | ⏳ À FAIRE | SysSec 2 |
+| **Q8** | Versions récursives (+, -) | ⏳ BONUS | Ame Thiam (TR) |
 
 ---
 
@@ -36,12 +35,13 @@
 
 | Rôle | Nom | Filière | Question Assignée |
 |------|-----|---------|-------------------|
-| 🎯 **Lead & Merge** | [Toi] | [Ta filière] | Gestion dépôt, review, rapport |
-| 💻 **IABD 1** | [Nom 1] | IABD | **Q1, Q2, Q3** ✅ (COMPLÉTÉES) |
-| 📡 **Telecom** | [Nom 3] | Telecom Réseau | **Q4** - Évaluation |
-| 💻 **IABD 2** | [Nom 2] | IABD | **Q5a, Q5b** - Addition/Soustraction |
-| 🔒 **SysSec 1** | [Nom 4] | Système Sécurité | **Q5c, Q5d** - Multiplication/Division |
-| 🔒 **SysSec 2** | [Nom 5] | Système Sécurité | **Q6** - Garbage Collector |
+| 🎯 **Lead & Merge** | [Ton nom] | GLSI | Gestion dépôt, review, Q7 |
+| 💻 **IABD 1** | [Ton nom] | GLSI | **Q1, Q2, Q3** ✅ |
+| 🔒 **Systèmes** | Sokhna Maimouna | SSI | **Q4** ✅ |
+| 💻 **IABD** | n0reyni (Ousmane Sow) | IABD | **Q5** ✅ |
+| 📡 **Télécom** | Makhtar Gueye | TR | **Q6a,b** ✅ |
+| 💻 **IABD** | Khadidiatou Niakh | IABD | **Q6c,d** ✅ |
+| 📡 **Télécom** | Ame Thiam | TR | **Q8** ⏳ BONUS |
 
 ---
 
