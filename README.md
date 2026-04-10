@@ -3,7 +3,7 @@
 [![C](https://img.shields.io/badge/C-99-blue)](https://en.wikipedia.org/wiki/C99)
 [![Java](https://img.shields.io/badge/Java-8-orange)](https://www.oracle.com/java/technologies/java8.html)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-97%25%20COMPLÉTÉ-brightgreen)](https://github.com/kr2m-dev/polynomes-dic2)
+[![Status](https://img.shields.io/badge/Status-100%25%20COMPLÉTÉ-success)](https://github.com/kr2m-dev/polynomes-dic2)
 
 > **Mini-projet** : Algorithmique et programmation avancées & POO avancée  
 > **Objectif** : Programmer la gestion de polynômes en **C** et **Java**
@@ -12,7 +12,7 @@
 
 ## 🎯 Status du Projet
 
-### ✅ Questions COMPLÉTÉES
+### ✅ Questions COMPLÉTÉES (8/8)
 
 | Question | Description | Status | Auteur | Filière |
 |----------|-------------|--------|--------|---------|
@@ -22,12 +22,13 @@
 | **Q6a,b** | Addition & Soustraction | ✅ COMPLÉTÉ | Makhtar Gueye 🌟 | TR |
 | **Q6c,d** | Multiplication & Division | ✅ COMPLÉTÉ | Khadidiatou Niakh 🌟 | IABD |
 | **Q7** | Garbage Collector | ✅ COMPLÉTÉ | [Ton nom] | GLSI |
+| **Q8** | Versions récursives (+, -) | ✅ BONUS | Lead (GLSI) | BONUS |
 
-### ⏳ Questions EN ATTENTE (Bonus)
+### 📊 Statistiques
 
-| Question | Description | Status | Assigné à |
-|----------|-------------|--------|-----------|
-| **Q8** | Versions récursives (+, -) | ⏳ BONUS | Ame Thiam (TR) |
+- **Questions obligatoires**: 7/7 ✅ (100%)
+- **Question bonus (Q8)**: 1/1 ✅ (100%)
+- **Taux global**: **100%** 🎉
 
 ---
 
@@ -41,7 +42,7 @@
 | 💻 **IABD** | n0reyni (Ousmane Sow) | IABD | **Q5** ✅ |
 | 📡 **Télécom** | Makhtar Gueye | TR | **Q6a,b** ✅ |
 | 💻 **IABD** | Khadidiatou Niakh | IABD | **Q6c,d** ✅ |
-| 📡 **Télécom** | Ame Thiam | TR | **Q8** ⏳ BONUS |
+| 📡 **Télécom** | Ame Thiam (prévu) / Lead (réalisé) | TR | **Q8** ✅ BONUS |
 
 ---
 
