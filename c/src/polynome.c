@@ -241,60 +241,45 @@ POINTEUR allouerMaillon(double coeff, int exposant) {
 }
 
 /*
- * Q2: Insertion par ordre décroissant d'exposant
- * Si même exposant existe, additionne les coefficients
+ * Q4: Insertion triée par degrés décroissants
+ * Implémenté par: Sokhna Maimouna
+ * Approche: Récursive (plus élégante que l'itérative)
+ * 
+ * Algorithme:
+ * 1. Ignorer les coefficients nuls
+ * 2. Insérer en tête si liste vide ou exposant supérieur
+ * 3. Fusionner si même exposant
+ * 4. Insérer récursivement sinon
+ * 
+ * Remerciements: Merci à Sokhna Maimouna pour cette implémentation élégante!
  */
 POINTEUR insererMonome(POINTEUR tete, double coeff, int exposant) {
-    POINTEUR nouveau;
+    /* Ignorer les coefficients nuls */
+    if (coeff == 0.0) return tete;
 
-    if (coeff == 0) return tete; /* Ignorer les coefficients nuls */
-
-    nouveau = allouerMaillon(coeff, exposant);
-
-    /* Insertion en tête si liste vide ou exposant plus grand */
+    /* Cas 1: Insertion en tête si liste vide ou exposant supérieur */
     if (tete == NULL || exposant > tete->exposant) {
-        nouveau->suivant = tete;
-        return nouveau;
+        POINTEUR m = allouerMaillon(coeff, exposant);
+        m->suivant = tete;
+        return m;
     }
 
-    /* Si même exposant en tête */
-    if (tete->exposant == exposant) {
+    /* Cas 2: Même exposant en tête → fusionner les coefficients */
+    if (exposant == tete->exposant) {
         tete->coeff += coeff;
-        /* Maillon créé devient inutile */
-        tousLesMaillons = tousLesMaillons->general;
-        free(nouveau);
-
-        /* Si coefficient devient nul, éliminer le monôme */
-        if (tete->coeff == 0) {
-            POINTEUR temp = tete;
-            tete = tete->suivant;
+        /* Si coefficient devient nul, supprimer ce monôme */
+        if (tete->coeff == 0.0) {
+            POINTEUR suite = tete->suivant;
+            /* Pour Q7 (Garbage Collector) - marquer comme inutile */
+            /* tete->utile = 0; */
+            free(tete);
+            return suite;
         }
         return tete;
     }
 
-    /* Recherche de la position d'insertion */
-    POINTEUR courant = tete;
-    while (courant->suivant != NULL && courant->suivant->exposant > exposant) {
-        courant = courant->suivant;
-    }
-
-    /* Vérifier si même exposant trouvé */
-    if (courant->suivant != NULL && courant->suivant->exposant == exposant) {
-        courant->suivant->coeff += coeff;
-        /* Maillon créé devient inutile */
-        tousLesMaillons = tousLesMaillons->general;
-        free(nouveau);
-
-        if (courant->suivant->coeff == 0) {
-            POINTEUR temp = courant->suivant;
-            courant->suivant = temp->suivant;
-        }
-        return tete;
-    }
-
-    /* Insertion au milieu */
-    nouveau->suivant = courant->suivant;
-    courant->suivant = nouveau;
+    /* Cas 3: Insérer récursivement plus loin dans la liste */
+    tete->suivant = insererMonome(tete->suivant, coeff, exposant);
     return tete;
 }
 

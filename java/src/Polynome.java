@@ -162,44 +162,56 @@ public class Polynome {
      * @param exposant Exposant du monôme
      */
     public void insererMonome(double coeff, int exposant) {
-        if (coeff == 0) return; // Ignorer les coefficients nuls
+        /* Q4: Insertion triée par degrés décroissants
+         * Implémenté par: Sokhna Maimouna
+         * Approche: Récursive (plus élégante que l'itérative)
+         * 
+         * Algorithme:
+         * 1. Ignorer les coefficients nuls
+         * 2. Insérer en tête si liste vide ou exposant supérieur
+         * 3. Fusionner si même exposant
+         * 4. Insérer récursivement sinon
+         * 
+         * Remerciements: Merci à Sokhna Maimouna pour cette implémentation élégante!
+         */
+        this.tete = insererTrie(this.tete, coeff, exposant);
+    }
 
-        Monome nouveau = new Monome(coeff, exposant);
+    /*
+     * Q4: Insertion récursive triée par degrés décroissants
+     * Implémenté par: Sokhna Maimouna
+     * 
+     * Algorithme récursif pour insérer un monôme dans une liste triée.
+     * 
+     * @param liste Tête de la liste chaînée
+     * @param coef Coefficient du monôme à insérer
+     * @param exp Exposant du monôme à insérer
+     * @return Nouvelle tête de liste
+     */
+    private Monome insererTrie(Monome liste, double coef, int exp) {
+        // Ignorer les coefficients nuls
+        if (coef == 0.0) return liste;
 
-        // Insertion en tête si liste vide ou exposant plus grand
-        if (tete == null || exposant > tete.getExposant()) {
-            nouveau.setSuivant(tete);
-            tete = nouveau;
-            return;
+        // Cas 1: Insertion en tête si liste vide ou exposant supérieur
+        if (liste == null || exp > liste.getExposant()) {
+            Monome m = new Monome(coef, exp);
+            m.setSuivant(liste);
+            return m;
         }
 
-        // Si même exposant en tête
-        if (tete.getExposant() == exposant) {
-            tete.setCoeff(tete.getCoeff() + coeff);
-            if (tete.getCoeff() == 0) {
-                tete = tete.getSuivant(); // Supprimer si coefficient devient nul
+        // Cas 2: Même exposant en tête → fusionner les coefficients
+        if (exp == liste.getExposant()) {
+            liste.setCoeff(liste.getCoeff() + coef);
+            // Si coefficient devient nul, supprimer ce monôme
+            if (liste.getCoeff() == 0.0) {
+                return liste.getSuivant(); // annulation
             }
-            return;
+            return liste;
         }
 
-        // Recherche de la position d'insertion
-        Monome courant = tete;
-        while (courant.getSuivant() != null && courant.getSuivant().getExposant() > exposant) {
-            courant = courant.getSuivant();
-        }
-
-        // Vérifier si même exposant trouvé
-        if (courant.getSuivant() != null && courant.getSuivant().getExposant() == exposant) {
-            courant.getSuivant().setCoeff(courant.getSuivant().getCoeff() + coeff);
-            if (courant.getSuivant().getCoeff() == 0) {
-                courant.setSuivant(courant.getSuivant().getSuivant());
-            }
-            return;
-        }
-
-        // Insertion au milieu
-        nouveau.setSuivant(courant.getSuivant());
-        courant.setSuivant(nouveau);
+        // Cas 3: Insérer récursivement plus loin dans la liste
+        liste.setSuivant(insererTrie(liste.getSuivant(), coef, exp));
+        return liste;
     }
 
     /* ============================================================
