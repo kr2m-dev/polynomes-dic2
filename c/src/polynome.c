@@ -232,10 +232,9 @@ POINTEUR allouerMaillon(double coeff, int exposant) {
     m->suivant = NULL;
     m->utile = 0;
 
-    /* Pour Q6 (Garbage Collector) - géré par SysSec 2
-     * m->general = tousLesMaillons;
-     * tousLesMaillons = m;
-     */
+    /* Pour Q7 (Garbage Collector) - Enregistrer dans la liste générale */
+    m->general = tousLesMaillons;
+    tousLesMaillons = m;
 
     return m;
 }
@@ -525,47 +524,103 @@ POINTEUR quotient(POINTEUR a, POINTEUR b, POINTEUR *reste) {
 }
 
 /* ============================================================
- * QUESTION 6: GARBAGE COLLECTOR
- * Assigné à: SysSec 2 - À IMPLÉMENTER ⏳
+ * QUESTION 7: GARBAGE COLLECTOR
+ * Implémenté par: [Ton nom] (GLSI - Lead)
  * ============================================================
- * Algorithme: Mark and Sweep
- * 1. Marquer tous les maillons accessibles depuis polyUtile[]
- * 2. Libérer les maillons non marqués
+ * 
+ * Mécanisme de recyclage de la mémoire fonctionnant "en sous-sol".
+ * Algorithme: Mark and Sweep (Marquer et Balayer)
+ * 
+ * Principe:
+ * 1. MARK (Marquer): Parcourir les polynômes utiles et marquer leurs maillons
+ * 2. SWEEP (Balayer): Parcourir tousLesMaillons et libérer les non marqués
+ * 
+ * Chaque maillon possède:
+ * - 'general': pointeur vers le maillon suivant dans la liste globale
+ * - 'utile': flag indiquant si le maillon est accessible (1) ou non (0)
+ * 
+ * Remerciements: Merci à toute l'équipe pour cette collaboration!
  */
 
 /*
- * Q6a: Marquer les maillons utiles
+ * Q7a: Marquer les maillons accessibles
+ * 
+ * Parcours récursif d'un polynôme pour marquer tous ses maillons.
+ * Un maillon marqué (utile = 1) ne sera pas libéré par le GC.
+ */
+static void marquerPolynome(POINTEUR p) {
+    while (p != NULL) {
+        p->utile = 1;  /* Marquer comme accessible */
+        p = p->suivant;
+    }
+}
+
+/*
+ * Q7a: Marquer tous les maillons utiles
+ * 
+ * Parcourt tous les polynômes enregistrés dans polyUtile[]
+ * et marque récursivement tous leurs maillons.
  */
 void marquerUtiles(void) {
-    /* TODO Q6a: IMPLÉMENTER PAR SysSec 2
-     * Indice: Parcourir récursivement depuis chaque polyUtile[]
-     * Mettre utile = 1 pour les maillons accessibles
-     */
-    
-    /* SysSec 2: Implémentez ici! */
+    /* Réinitialiser tous les marquages */
+    POINTEUR courant = tousLesMaillons;
+    while (courant != NULL) {
+        courant->utile = 0;  /* Réinitialiser à 0 (non marqué) */
+        courant = courant->general;
+    }
+
+    /* Marquer les maillons des polynômes utiles */
+    int i;
+    for (i = 0; i < nbPolyUtiles; i++) {
+        marquerPolynome(polyUtile[i]);
+    }
 }
 
 /*
- * Q6b: Libérer les maillons non marqués
+ * Q7b: Libérer les maillons non marqués
+ * 
+ * Parcourt la liste de tous les maillons alloués (tousLesMaillons)
+ * et libère ceux qui n'ont pas été marqués (utile == 0).
+ * Met à jour les liens dans la liste générale.
  */
 void libererInutiles(void) {
-    /* TODO Q6b: IMPLÉMENTER PAR SysSec 2
-     * Indice: Parcourir tousLesMaillons et free() si utile == 0
-     * Mettre à jour les liens dans la liste générale
-     */
-    
-    /* SysSec 2: Implémentez ici! */
+    POINTEUR courant = tousLesMaillons;
+    POINTEUR precedent = NULL;
+
+    while (courant != NULL) {
+        if (courant->utile == 0) {
+            /* Maillon non utilisé : le libérer */
+            POINTEUR aLiberer = courant;
+            courant = courant->general;
+
+            if (precedent == NULL) {
+                tousLesMaillons = courant;
+            } else {
+                precedent->general = courant;
+            }
+
+            free(aLiberer);
+        } else {
+            /* Maillon utilisé : garder et passer au suivant */
+            precedent = courant;
+            courant = courant->general;
+        }
+    }
 }
 
 /*
- * Q6c: Fonction principale du GC
+ * Q7c: Fonction principale du Garbage Collector
+ * 
+ * Exécute le mécanisme complet de recyclage:
+ * 1. Marquer les maillons accessibles
+ * 2. Libérer les maillons non marqués
+ * 
+ * Cette fonction peut être appelée périodiquement ou manuellement
+ * pour nettoyer la mémoire des maillons devenus inutiles.
  */
 void garbageCollector(void) {
-    /* TODO Q6c: IMPLÉMENTER PAR SysSec 2
-     * Indice: Appeler marquerUtiles() puis libererInutiles()
-     */
-    
-    /* SysSec 2: Implémentez ici! */
+    marquerUtiles();
+    libererInutiles();
 }
 
 /* ============================================================

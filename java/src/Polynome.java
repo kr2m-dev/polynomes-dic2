@@ -517,23 +517,98 @@ public class Polynome {
      */
 
     /**
-     * Marque le polynôme comme pouvant être libéré
-     * TODO Q6: À IMPLÉMENTER PAR SysSec 2
+     * Q7: Marque le polynôme comme pouvant être libéré
+     * Implémenté par: [Ton nom] (GLSI - Lead)
+     * 
+     * En Java, le Garbage Collector est automatique, mais cette méthode
+     * permet de "suggérer" explicitement la libération en mettant les
+     * références à null, rendant les objets éligibles au GC.
+     * 
+     * Remerciements: Merci à toute l'équipe pour cette collaboration!
      */
     public void liberer() {
-        /* TODO Q6: IMPLÉMENTER PAR SysSec 2
-         * Indice: Mettre les références à null pour que le GC Java
-         * puisse libérer la mémoire
-         */
-        
-        /* Placeholder - À remplacer */
-        throw new UnsupportedOperationException("Q6: À implémenter par SysSec 2");
-        
-        /* SysSec 2: Implémentez ici!
+        /* Mettre les références à null pour que le GC Java
+         * puisse libérer la mémoire associée */
         this.tete = null;
         this.expressionOrig = null;
-        */
+        
+        /* Suggérer explicitement au GC de s'exécuter (optionnel) */
+        System.gc();
     }
+
+    /**
+     * Crée une copie profonde du polynôme
+     * @return Une copie du polynôme
+     */
+    public Polynome copier() {
+        Polynome copie = new Polynome();
+        Monome courant = this.tete;
+        while (courant != null) {
+            copie.insererMonome(courant.getCoeff(), courant.getExposant());
+            courant = courant.getSuivant();
+        }
+        return copie;
+    }
+
+    /* ============================================================
+     * QUESTION 8: VERSIONS RÉCURSIVES - À IMPLÉMENTER ⏳
+     * Assigné à: Ame Thiam (TR) - BONUS
+     * ============================================================
+     * 
+     * Fonctions bonus: versions récursives de plus() et moins()
+     * Ces implémentations sont plus élégantes mais consomment plus
+     * de mémoire à cause de la récursion.
+     */
+
+    /**
+     * Q8a: Addition récursive (version bonus)
+     * TODO Q8a: À IMPLÉMENTER PAR Ame Thiam
+     * 
+     * Approche récursive élégante pour additionner deux polynômes.
+     * Plus lisible mais moins efficace que la version itérative.
+     * 
+     * @param autre Autre polynôme à additionner
+     * @return Nouveau polynôme résultat
+     */
+    public Polynome plusRecursif(Polynome autre) {
+        /* TODO Q8a: À IMPLÉMENTER PAR Ame Thiam (TR)
+         * 
+         * Approche récursive:
+         * Si liste a vide : retourner copie de b
+         * Si liste b vide : retourner copie de a
+         * Si a->exposant > b->exposant : 
+         *     retourner a + fusion(b, a->suivant)
+         * Si a->exposant < b->exposant :
+         *     retourner b + fusion(a, b->suivant)
+         * Sinon (même exposant) :
+         *     coeff = a->coeff + b->coeff
+         *     retourner maillon(coeff, exposant) + fusion(a->suivant, b->suivant)
+         */
+
+        /* Placeholder - À remplacer par l'implémentation récursive */
+        throw new UnsupportedOperationException("Q8a: À implémenter par Ame Thiam (TR)");
+    }
+
+    /**
+     * Q8b: Soustraction récursive (version bonus)
+     * TODO Q8b: À IMPLÉMENTER PAR Ame Thiam
+     * 
+     * Approche récursive élégante pour soustraire deux polynômes.
+     * 
+     * @param autre Autre polynôme à soustraire
+     * @return Nouveau polynôme résultat
+     */
+    public Polynome moinsRecursif(Polynome autre) {
+        /* TODO Q8b: À IMPLÉMENTER PAR Ame Thiam (TR)
+         * 
+         * Stratégie: a - b = a + (-b)
+         * Appeler plusRecursif() après avoir négautre
+         */
+
+        /* Placeholder - À remplacer */
+        throw new UnsupportedOperationException("Q8b: À implémenter par Ame Thiam (TR)");
+    }
+}
 
     /**
      * Crée une copie profonde du polynôme
