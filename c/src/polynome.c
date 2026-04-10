@@ -347,42 +347,102 @@ double eval(POINTEUR p, double x) {
  */
 
 /*
- * Q5a: ADDITION
- * Assigné à: IABD 2 - À IMPLÉMENTER ⏳
- * Objectif: Calculer a + b
+ * Q6a: ADDITION
+ * Implémenté par: Makhtar Gueye (IABD 2)
+ * 
+ * Fusion de deux listes triées par ordre décroissant d'exposant.
+ * Algorithme: Parcours simultané avec pointeurs tête+queue pour insertion O(1).
+ * 
+ * Remerciements: Merci à Makhtar Gueye pour cette implémentation optimisée!
  */
 POINTEUR plus(POINTEUR a, POINTEUR b) {
-    /* TODO Q5a: IMPLÉMENTER PAR IABD 2
-     * Indice: Fusionner deux listes triées (décroissant)
-     * Additionner coefficients si même exposant
-     */
-    
-    /* Placeholder - À remplacer */
-    (void)a;
-    (void)b;
-    
-    /* IABD 2: Implémentez ici! */
-    
-    return NULL; /* TEMPORAIRE - À SUPPRIMER */
+    POINTEUR resultat = NULL;
+    POINTEUR queue = NULL;
+
+    while (a != NULL || b != NULL) {
+        double coeff;
+        int exposant;
+
+        /* Cas 1: a a un exposant plus grand que b (ou b est vide) */
+        if (a != NULL && (b == NULL || a->exposant > b->exposant)) {
+            coeff = a->coeff;
+            exposant = a->exposant;
+            a = a->suivant;
+        }
+        /* Cas 2: b a un exposant plus grand que a (ou a est vide) */
+        else if (b != NULL && (a == NULL || b->exposant > a->exposant)) {
+            coeff = b->coeff;
+            exposant = b->exposant;
+            b = b->suivant;
+        }
+        /* Cas 3: même exposant → additionner les coefficients */
+        else {
+            coeff = a->coeff + b->coeff;
+            exposant = a->exposant;
+            a = a->suivant;
+            b = b->suivant;
+        }
+
+        /* Ignorer les coefficients nuls */
+        if (coeff == 0.0) continue;
+
+        /* Créer un nouveau maillon */
+        POINTEUR m = allouerMaillon(coeff, exposant);
+        
+        /* Insérer en fin avec pointeur queue (O(1)) */
+        if (resultat == NULL) {
+            resultat = m;
+            queue = m;
+        } else {
+            queue->suivant = m;
+            queue = m;
+        }
+    }
+
+    return resultat;
 }
 
 /*
- * Q5b: SOUSTRACTION
- * Assigné à: IABD 2 - À IMPLÉMENTER ⏳
- * Objectif: Calculer a - b
+ * Q6b: SOUSTRACTION
+ * Implémenté par: Makhtar Gueye (IABD 2)
+ * 
+ * Stratégie élégante: a - b = a + (-b)
+ * La fonction negation crée une copie de b avec coefficients inversés.
+ * 
+ * Remerciements: Merci à Makhtar Gueye pour cette approche astucieuse!
  */
 POINTEUR moins(POINTEUR a, POINTEUR b) {
-    /* TODO Q5b: IMPLÉMENTER PAR IABD 2
-     * Indice: Similaire à l'addition mais avec signes négatifs
-     */
+    POINTEUR neg_b = negation(b);
+    POINTEUR resultat = plus(a, neg_b);
+    /* Note: neg_b sera géré par le GC (Q7), pas besoin de liberer ici */
+    return resultat;
+}
+
+/*
+ * Fonction auxiliaire: Négation d'un polynôme
+ * Crée une copie avec tous les coefficients multipliés par -1.
+ * 
+ * Utilisée par moins() pour implémenter a - b = a + (-b).
+ */
+static POINTEUR negation(POINTEUR p) {
+    POINTEUR neg = NULL;
+    POINTEUR queue = NULL;
     
-    /* Placeholder - À remplacer */
-    (void)a;
-    (void)b;
+    while (p != NULL) {
+        POINTEUR m = allouerMaillon(-p->coeff, p->exposant);
+        
+        if (neg == NULL) {
+            neg = m;
+            queue = m;
+        } else {
+            queue->suivant = m;
+            queue = m;
+        }
+        
+        p = p->suivant;
+    }
     
-    /* IABD 2: Implémentez ici! */
-    
-    return NULL; /* TEMPORAIRE - À SUPPRIMER */
+    return neg;
 }
 
 /*

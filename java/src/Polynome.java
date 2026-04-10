@@ -297,65 +297,112 @@ public class Polynome {
 
     /**
      * Additionne deux polynômes
-     * TODO Q5a: À IMPLÉMENTER PAR IABD 2
+     * Implémenté par: Makhtar Gueye (IABD 2)
+     * 
+     * Fusion de deux listes triées par ordre décroissant d'exposant.
+     * Algorithme: Parcours simultané avec pointeurs tête+queue pour insertion O(1).
+     * 
+     * Remerciements: Merci à Makhtar Gueye pour cette implémentation optimisée!
+     * 
      * @param autre Autre polynôme à additionner
      * @return Nouveau polynôme résultat
      */
     public Polynome plus(Polynome autre) {
-        /* TODO Q5a: IMPLÉMENTER PAR IABD 2
-         * Indice: Fusionner deux listes triées (décroissant)
-         * Additionner coefficients si même exposant
-         */
-        
-        /* Placeholder - À remplacer */
-        throw new UnsupportedOperationException("Q5a: À implémenter par IABD 2");
-        
-        /* IABD 2: Implémentez ici!
         Polynome resultat = new Polynome();
-        Monome p1 = this.tete;
-        Monome p2 = autre.tete;
+        Monome queue = null;
         
-        while (p1 != null && p2 != null) {
-            if (p1.getExposant() > p2.getExposant()) {
-                resultat.insererMonome(p1.getCoeff(), p1.getExposant());
-                p1 = p1.getSuivant();
-            } else if (p1.getExposant() < p2.getExposant()) {
-                resultat.insererMonome(p2.getCoeff(), p2.getExposant());
-                p2 = p2.getSuivant();
+        Monome a = this.tete;
+        Monome b = autre.tete;
+
+        while (a != null || b != null) {
+            double coeff;
+            int exposant;
+
+            /* Cas 1: a a un exposant plus grand que b (ou b est vide) */
+            if (a != null && (b == null || a.getExposant() > b.getExposant())) {
+                coeff = a.getCoeff();
+                exposant = a.getExposant();
+                a = a.getSuivant();
+            }
+            /* Cas 2: b a un exposant plus grand que a (ou a est vide) */
+            else if (b != null && (a == null || b.getExposant() > a.getExposant())) {
+                coeff = b.getCoeff();
+                exposant = b.getExposant();
+                b = b.getSuivant();
+            }
+            /* Cas 3: même exposant → additionner les coefficients */
+            else {
+                coeff = a.getCoeff() + b.getCoeff();
+                exposant = a.getExposant();
+                a = a.getSuivant();
+                b = b.getSuivant();
+            }
+
+            /* Ignorer les coefficients nuls */
+            if (coeff == 0.0) continue;
+
+            /* Créer un nouveau monôme */
+            Monome m = new Monome(coeff, exposant);
+            
+            /* Insérer en fin avec pointeur queue (O(1)) */
+            if (resultat.tete == null) {
+                resultat.tete = m;
+                queue = m;
             } else {
-                resultat.insererMonome(p1.getCoeff() + p2.getCoeff(), p1.getExposant());
-                p1 = p1.getSuivant();
-                p2 = p2.getSuivant();
+                queue.setSuivant(m);
+                queue = m;
             }
         }
-        
-        while (p1 != null) {
-            resultat.insererMonome(p1.getCoeff(), p1.getExposant());
-            p1 = p1.getSuivant();
-        }
-        
-        while (p2 != null) {
-            resultat.insererMonome(p2.getCoeff(), p2.getExposant());
-            p2 = p2.getSuivant();
-        }
-        
+
         return resultat;
-        */
     }
 
     /**
      * Soustrait deux polynômes
-     * TODO Q5b: À IMPLÉMENTER PAR IABD 2
+     * Implémenté par: Makhtar Gueye (IABD 2)
+     * 
+     * Stratégie élégante: a - b = a + (-b)
+     * La méthode privée negation() crée une copie de b avec coefficients inversés.
+     * 
+     * Remerciements: Merci à Makhtar Gueye pour cette approche astucieuse!
+     * 
      * @param autre Autre polynôme à soustraire
      * @return Nouveau polynôme résultat
      */
     public Polynome moins(Polynome autre) {
-        /* TODO Q5b: IMPLÉMENTER PAR IABD 2
-         * Indice: Similaire à l'addition mais avec signes négatifs
-         */
+        Polynome negB = negation(autre);
+        return this.plus(negB);
+    }
+
+    /**
+     * Méthode auxiliaire privée: Négation d'un polynôme
+     * Crée une copie avec tous les coefficients multipliés par -1.
+     * 
+     * Utilisée par moins() pour implémenter a - b = a + (-b).
+     * 
+     * @param p Polynôme à négater
+     * @return Nouveau polynôme avec coefficients inversés
+     */
+    private static Polynome negation(Polynome p) {
+        Polynome neg = new Polynome();
+        Monome queue = null;
         
-        /* Placeholder - À remplacer */
-        throw new UnsupportedOperationException("Q5b: À implémenter par IABD 2");
+        Monome courant = p.tete;
+        while (courant != null) {
+            Monome m = new Monome(-courant.getCoeff(), courant.getExposant());
+            
+            if (neg.tete == null) {
+                neg.tete = m;
+                queue = m;
+            } else {
+                queue.setSuivant(m);
+                queue = m;
+            }
+            
+            courant = courant.getSuivant();
+        }
+        
+        return neg;
     }
 
     /**
