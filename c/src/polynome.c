@@ -157,8 +157,9 @@ static int analyserMonome(int signe, double *coeff, int *exposant) {
         aCoeff = 1;
         avancer();
 
-        /* Vérifier si * X suit */
+        /* Vérifier si X suit (avec ou sans *) */
         if (tokenCourant.type == TOKEN_MULT) {
+            /* Format: nombre * X */
             avancer();
             if (tokenCourant.type == TOKEN_X) {
                 aX = 1;
@@ -168,6 +169,11 @@ static int analyserMonome(int signe, double *coeff, int *exposant) {
                 printf("Erreur: 'X' attendu après '* '\n");
                 exit(1);
             }
+        } else if (tokenCourant.type == TOKEN_X) {
+            /* Format: nombreX (sans *) */
+            aX = 1;
+            avancer();
+            *exposant = analyserXpuissance();
         }
     } else if (tokenCourant.type == TOKEN_X) {
         aX = 1;
