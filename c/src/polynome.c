@@ -182,20 +182,6 @@ static int analyserMonome(int signe, double *coeff, int *exposant) {
     *coeff *= signe;
     return 1; /* Succès */
 }
-        }
-    } else if (tokenCourant.type == TOKEN_X) {
-        aX = 1;
-        coeff = 1.0;
-        avancer();
-        exposant = analyserXpuissance();
-    } else {
-        printf("Erreur: nombre ou X attendu\n");
-        exit(1);
-    }
-
-    coeff *= signe;
-    return insererMonome(NULL, coeff, exposant);
-}
 
 /*
  * Q1: Analyseur syntaxique principal
