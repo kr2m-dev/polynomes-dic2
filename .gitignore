@@ -9,7 +9,9 @@
 *.so
 *.dll
 polynome
-test_q*
+
+# Ne PAS ignorer les fichiers de test sources (seulement les exécutables)
+# test_q*
 
 # Java
 *.class

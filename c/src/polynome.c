@@ -432,6 +432,29 @@ static POINTEUR negation(POINTEUR p) {
 }
 
 /*
+ * Q6b: SOUSTRACTION
+ * Implémenté par: Makhtar Gueye (TR)
+ *
+ * Algorithme: a - b = a + (-b)
+ * Utilise la fonction negation() pour inverser b, puis appelle plus().
+ *
+ * Remerciements: Merci à Makhtar Gueye pour cette implémentation!
+ */
+POINTEUR moins(POINTEUR a, POINTEUR b) {
+    /* Cas simple: b est NULL */
+    if (b == NULL) {
+        return a;
+    }
+    /* Cas simple: a est NULL → retourne -b */
+    if (a == NULL) {
+        return negation(b);
+    }
+    /* Cas général: a - b = a + (-b) */
+    POINTEUR neg_b = negation(b);
+    return plus(a, neg_b);
+}
+
+/*
  * Q6c: MULTIPLICATION
  * Implémenté par: Khadidiatou Niakh (SysSec 1)
  * 
