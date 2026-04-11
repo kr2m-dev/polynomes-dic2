@@ -268,7 +268,7 @@ public class Polynome {
     }
 
     /* ============================================================
-     * QUESTION 4: ÉVALUATION - À IMPLÉMENTER ⏳
+     * QUESTION 4: ÉVALUATION - À IMPLÉMENTER
      * Assigné à: Telecom Réseau
      * ============================================================
      * Objectif: Calculer P(x) = Σ(coeff * x^exposant)
@@ -291,7 +291,7 @@ public class Polynome {
     }
 
     /* ============================================================
-     * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES - À IMPLÉMENTER ⏳
+     * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES - À IMPLÉMENTER
      * ============================================================
      */
 
