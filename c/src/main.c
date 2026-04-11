@@ -97,7 +97,11 @@ void menuAnalyserAfficher() {
     afficherPolynome(p);
     printf("\"\n");
     
-    printf("Degré: %d\n", getDegre(p));
+    if (p != NULL) {
+        printf("Degré: %d\n", p->exposant);
+    } else {
+        printf("Degré: 0 (polynôme nul)\n");
+    }
     
     ajouterPolyUtile(p);
     pause();

@@ -353,6 +353,15 @@ double eval(POINTEUR p, double x) {
     return resultat;
 }
 
+/*
+ * Fonction utilitaire: retourne le degré du polynôme
+ * Degré = exposant maximum
+ */
+int getDegre(POINTEUR p) {
+    if (p == NULL) return 0;
+    return p->exposant; /* Liste triée par ordre décroissant */
+}
+
 /* ============================================================
  * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES
  * ============================================================

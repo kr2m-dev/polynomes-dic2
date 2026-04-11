@@ -133,6 +133,13 @@ void afficherPolynome(POINTEUR p);
  */
 double eval(POINTEUR p, double x);
 
+/**
+ * @brief Retourne le degré du polynôme (exposant maximum)
+ * @param p Polynôme
+ * @return Degré (exposant maximum), 0 si polynôme nul
+ */
+int getDegre(POINTEUR p);
+
 /* ============================================================
  * QUESTION 5: OPÉRATIONS ARITHMÉTIQUES
  * ============================================================ */
