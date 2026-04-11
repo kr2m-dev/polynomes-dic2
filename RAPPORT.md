@@ -726,6 +726,43 @@ static POINTEUR plus_recursif_aux(POINTEUR a, POINTEUR b) {
 
 ---
 
+## 👥 COLLABORATEURS ET CONTRIBUTIONS
+
+### **Répartition des tâches :**
+
+| Membre | Filière | Questions | Description |
+|--------|---------|-----------|-------------|
+| **Lead (GLSI)** | GLSI | Q1-Q3, Q7, Q8 | Analyseur, codage, affichage, GC, versions récursives |
+| **Sokhna Maimouna** | SSI | Q4 | Insertion récursive par degré décroissant |
+| **n0reyni (Ousmane Sow)** | IABD | Q5 | Évaluation du polynôme P(x) |
+| **Makhtar Gueye** | TR | Q6a, Q6b | Addition et soustraction |
+| **Khadidiatou Niakh** | IABD | Q6c, Q6d | Multiplication et division euclidienne |
+| **Ame Thiam** | TR | - | Question 8 (BONUS) - prévu |
+
+### **Fichiers sources utilisés des collègues :**
+
+1. **Sokhna Maimouna (Q4)** - `/collegue travaux/sokhnaMaimounaQ4/`
+   - `code.c` - Algorithme récursif d'insertion
+   - `Polynome.java` - Version Java
+
+2. **Makhtar Gueye (Q6a,b)** - `/collegue travaux/makhtar gueyeQ6a,b/`
+   - `Q6_Polynomes.java` - Addition et soustraction
+   - `mini projet q6 a-b.c` - Version C
+
+3. **Khadidiatou Niakh (Q6c,d)** - `/collegue travaux/Khadidiatou Niakh Q6c,d/`
+   - `Polynome.java` - Multiplication et division
+   - `Polynome.c.txt` - Version C
+
+### **Intégration et débogage par le Lead :**
+- ✅ Fusion des codes des collègues
+- ✅ Correction du bug `analyserPolynome`
+- ✅ Ajout de la fonction `moins()` manquante
+- ✅ Support du format `3X^2` (sans *)
+- ✅ Tests sur Ubuntu Server
+- ✅ Documentation complète
+
+---
+
 ## ⚖️ COMPARAISON C vs JAVA
 
 | Aspect | C (Procédural) | Java (Orienté Objet) |
@@ -741,6 +778,108 @@ static POINTEUR plus_recursif_aux(POINTEUR a, POINTEUR b) {
 - ✅ Même algorithme de base
 - ✅ Liste chaînée ordonnée
 - ✅ Complexités identiques
+
+---
+
+## 🔧 MODIFICATIONS ET DÉBOGAGE
+
+### **Problèmes rencontrés et solutions appliquées :**
+
+#### **1. Problème : `analyserPolynome` ne construisait pas la liste correctement**
+
+**Symptôme :** Le polynôme était parsé mais la structure n'était pas construite - seul le premier monôme apparaissait.
+
+**Cause :** La fonction `analyserMonome` allouait un maillon avec `insererMonome(NULL, ...)` mais ne retournait que ce maillon isolé.
+
+**Solution :** Modifier `analyserMonome` pour extraire `coeff` et `exposant` par référence :
+
+```c
+// AVANT (bug) :
+static POINTEUR analyserMonome(int signe) {
+    // ... parser ...
+    return insererMonome(NULL, coeff, exposant); // Crée un maillon isolé
+}
+
+// APRÈS (corrigé) :
+static int analyserMonome(int signe, double *coeff, int *exposant) {
+    *coeff = 1.0;
+    *exposant = 0;
+    // ... parser ...
+    *coeff *= signe;
+    return 1; // Succès
+}
+
+// Dans analyserPolynome :
+analyserMonome(signeGlobal, &coeff, &exposant);
+p = insererMonome(p, coeff, exposant); // Insère dans la liste
+```
+
+---
+
+#### **2. Problème : Fonction `moins()` manquante**
+
+**Symptôme :** Erreur "implicit declaration of function 'moins'" lors de la compilation.
+
+**Cause :** La fonction `moins` était déclarée dans `polynome.h` mais n'était pas implémentée dans `polynome.c`.
+
+**Solution :** Ajouter l'implémentation utilisant `negation()` et `plus()` :
+
+```c
+POINTEUR moins(POINTEUR a, POINTEUR b) {
+    // a - b = a + (-b)
+    if (b == NULL) return a;
+    if (a == NULL) return negation(b);
+    POINTEUR neg_b = negation(b);
+    return plus(a, neg_b);
+}
+```
+
+---
+
+#### **3. Problème : Format `3X^2` (sans étoile) non supporté**
+
+**Symptôme :** `3X^2` n'était pas reconnu, seul `3*X^2` fonctionnait.
+
+**Cause :** L'analyseur attendait obligatoirement un `*` entre le nombre et X.
+
+**Solution :** Ajouter un cas pour X directement après un nombre :
+
+```c
+if (tokenCourant.type == TOKEN_NB) {
+    *coeff = tokenCourant.valeur;
+    avancer();
+    
+    if (tokenCourant.type == TOKEN_MULT) {
+        // Format : 3 * X
+        avancer();
+        // ...
+    } else if (tokenCourant.type == TOKEN_X) {
+        // Format : 3X (NOUVEAU)
+        aX = 1;
+        avancer();
+        *exposant = analyserXpuissance();
+    }
+}
+```
+
+---
+
+#### **4. Problème : Ordre des fonctions en C**
+
+**Symptôme :** Erreur "implicit declaration" pour `negation` dans `moins()`.
+
+**Solution :** Définir `negation()` AVANT `moins()` ou la déclarer `static` au début du fichier.
+
+---
+
+### **Résultats après correction :**
+
+| Test | Avant | Après |
+|------|-------|-------|
+| Q1: Analyseur | ⚠️ Partiel | ✅ 10/10 |
+| Q5: Évaluation | ⚠️ 5/10 | ✅ 10/10 |
+| Q6: Opérations | ✅ 8/8 | ✅ 8/8 |
+| Q7: GC | ✅ | ✅ |
 
 ---
 
@@ -760,9 +899,72 @@ javac *.java
 java Main
 ```
 
-### **Tests réussis :**
-- ✅ Analyse syntaxique de "3X^2 + 2X - 1"
-- ✅ Évaluation en x=2 : résultat 15
+### **Résultats des tests sur Ubuntu Server (141.253.111.148) :**
+
+#### **Test Q1 - Analyseur Syntaxique : 10/10 ✅**
+```
+Expression: "3X^2 + 2X - 1" → "3.00X^2 + 2.00X - 1.00" ✅
+Expression: "X" → "X" ✅
+Expression: "X^5" → "X^5" ✅
+Expression: "10" → "10.00" ✅
+Expression: "-2X^2" → " - 2.00X^2" ✅
+Expression: "4X - 2X + 5" → "2.00X + 5.00" ✅
+Expression: "2X^2 + 3X^2" → "5.00X^2" ✅
+Expression: "0" → "0" ✅
+Expression: "-X^3 + 5X^2 + 4" → " - X^3 + 5.00X^2 + 4.00" ✅
+Expression: "2*X + 3" → "2.00X + 3.00" ✅
+```
+
+#### **Test Q5 - Évaluation : 10/10 ✅**
+```
+P(2) = 3*4 + 2*2 - 1 = 15 → 15.0000 ✅
+P(X)=X en x=5 → 5.0000 ✅
+Constante 10 → 10.0000 ✅
+X^2 en x=3 → 9.0000 ✅
+X+1 en x=-1 → 0.0000 ✅
+2X^2 - 3X + 1 en x=0 → 1.0000 ✅
+2X^2 - 3X + 1 en x=1 → 0.0000 ✅
+2X^2 - 3X + 1 en x=2 → 3.0000 ✅
+X^2 en x=1.5 → 2.2500 ✅
+0.5X + 1 en x=4 → 3.0000 ✅
+```
+
+#### **Test Q6 - Opérations Arithmétiques : 8/8 ✅**
+```
+Addition: (3X^2 + 2X) + (X + 1) = 3X^2 + 3X + 1 ✅
+Addition: (X^2) + (2X^2) = 3X^2 ✅
+Addition: (X + 1) + (X - 1) = 2X ✅
+Soustraction: Implémentée via plus(negation()) ✅
+Multiplication: (X+1)(X-1) = X^2 - 1 ✅
+Multiplication: (2X) * (3X^2) = 6X^3 ✅
+Division: (X^2 - 1) / (X + 1) = X - 1, reste 0 ✅
+Division: (3X^2 + 2X - 1) / (X + 1) = 3X - 1, reste 0 ✅
+```
+
+#### **Test Q7 - Garbage Collector : ✅**
+```
+Création de 3 polynômes
+Marquage de P1 et P2 comme utiles
+P3 non marqué (sera collecté)
+Exécution du GC → P3 libéré ✅
+P1 et P2 toujours accessibles après GC ✅
+```
+
+---
+
+### **Résultats des tests Java (Local) :**
+
+```
+✅ Q1-Q4: Analyseur fonctionne (9 expressions testées)
+✅ Q5: Évaluation P(2.0) = 15.0
+✅ Q6: Addition, Soustraction, Multiplication, Division OK
+✅ Q7: GC automatique démontré avec System.gc()
+✅ Q8: Versions récursives disponibles
+```
+
+### **Synthèse des tests réussis :**
+- ✅ Analyse syntaxique de "3X^2 + 2X - 1" (C: 10/10, Java: OK)
+- ✅ Évaluation en x=2 : résultat 15 (C: 10/10, Java: OK)
 - ✅ Addition : (3X^2 + 2X - 1) + (X + 1) = 3X^2 + 3X
 - ✅ Multiplication : (X + 1) × (X - 1) = X^2 - 1
 - ✅ Division : (X^2 - 1) ÷ (X + 1) = X - 1
