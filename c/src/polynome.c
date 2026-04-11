@@ -144,16 +144,16 @@ static int analyserXpuissance() {
     return exposant;
 }
 
-/* Fonction interne: analyse un monôme */
-static POINTEUR analyserMonome(int signe) {
-    double coeff = 1.0;
-    int exposant = 0;
+/* Fonction interne: analyse un monôme et extrait coeff et exposant */
+static int analyserMonome(int signe, double *coeff, int *exposant) {
+    *coeff = 1.0;
+    *exposant = 0;
     int aCoeff = 0;
     int aX = 0;
 
     /* Premier élément: nombre ou X */
     if (tokenCourant.type == TOKEN_NB) {
-        coeff = tokenCourant.valeur;
+        *coeff = tokenCourant.valeur;
         aCoeff = 1;
         avancer();
 
@@ -163,11 +163,25 @@ static POINTEUR analyserMonome(int signe) {
             if (tokenCourant.type == TOKEN_X) {
                 aX = 1;
                 avancer();
-                exposant = analyserXpuissance();
+                *exposant = analyserXpuissance();
             } else {
-                printf("Erreur: 'X' attendu après '*'\n");
+                printf("Erreur: 'X' attendu après '* '\n");
                 exit(1);
             }
+        }
+    } else if (tokenCourant.type == TOKEN_X) {
+        aX = 1;
+        *coeff = 1.0;
+        avancer();
+        *exposant = analyserXpuissance();
+    } else {
+        printf("Erreur: nombre ou X attendu\n");
+        exit(1);
+    }
+
+    *coeff *= signe;
+    return 1; /* Succès */
+}
         }
     } else if (tokenCourant.type == TOKEN_X) {
         aX = 1;
@@ -183,12 +197,14 @@ static POINTEUR analyserMonome(int signe) {
     return insererMonome(NULL, coeff, exposant);
 }
 
-/* 
+/*
  * Q1: Analyseur syntaxique principal
  * Lit un texte caractère par caractère et reconnaît un polynôme
  */
 POINTEUR analyserPolynome(char *texte) {
     POINTEUR p = NULL;
+    double coeff;
+    int exposant;
     int signeGlobal = 1;
 
     initialiserAnalyseur(texte);
@@ -201,13 +217,16 @@ POINTEUR analyserPolynome(char *texte) {
         avancer();
     }
 
-    p = analyserMonome(signeGlobal);
+    /* Analyser le premier monôme */
+    analyserMonome(signeGlobal, &coeff, &exposant);
+    p = insererMonome(p, coeff, exposant);
 
+    /* Analyser les monômes suivants */
     while (tokenCourant.type == TOKEN_PLUS || tokenCourant.type == TOKEN_MOINS) {
         signeGlobal = (tokenCourant.type == TOKEN_PLUS) ? 1 : -1;
         avancer();
-        POINTEUR monome = analyserMonome(signeGlobal);
-        p = insererMonome(p, monome->coeff, monome->exposant);
+        analyserMonome(signeGlobal, &coeff, &exposant);
+        p = insererMonome(p, coeff, exposant);
     }
 
     return p;
