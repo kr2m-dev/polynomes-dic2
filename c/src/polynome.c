@@ -404,26 +404,11 @@ POINTEUR plus(POINTEUR a, POINTEUR b) {
 }
 
 /*
- * Q6b: SOUSTRACTION
- * Implémenté par: Makhtar Gueye (IABD 2)
- * 
- * Stratégie élégante: a - b = a + (-b)
- * La fonction negation crée une copie de b avec coefficients inversés.
- * 
- * Remerciements: Merci à Makhtar Gueye pour cette approche astucieuse!
- */
-POINTEUR moins(POINTEUR a, POINTEUR b) {
-    POINTEUR neg_b = negation(b);
-    POINTEUR resultat = plus(a, neg_b);
-    /* Note: neg_b sera géré par le GC (Q7), pas besoin de liberer ici */
-    return resultat;
-}
-
-/*
  * Fonction auxiliaire: Négation d'un polynôme
  * Crée une copie avec tous les coefficients multipliés par -1.
  * 
  * Utilisée par moins() pour implémenter a - b = a + (-b).
+ * DOIT être définie AVANT moins() pour éviter l'erreur de déclaration implicite.
  */
 static POINTEUR negation(POINTEUR p) {
     POINTEUR neg = NULL;
