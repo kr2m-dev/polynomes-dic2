@@ -883,6 +883,147 @@ if (tokenCourant.type == TOKEN_NB) {
 
 ---
 
+## 📸 CAPTURES D'ÉCRAN ET DÉMONSTRATIONS
+
+Cette section présente les captures d'écran du programme interactif en C, illustrant chaque fonctionnalité implémentée.
+
+### **Menu Principal Interactif**
+
+![Menu Principal](captures_renommees/01_menu_principal.png)
+
+**Description :** Menu principal du programme interactif affichant les 10 options disponibles (Q1-Q8 + Tests). L'utilisateur peut choisir parmi toutes les fonctionnalités du projet.
+
+---
+
+### **Question 1-3 : Analyse et Affichage**
+
+![Q1 Analyse et Affichage](captures_renommees/02_q1_analyse_affichage.png)
+
+**Description :** L'analyseur syntaxique accepte une expression textuelle et la convertit en structure de polynôme. 
+- **Entrée :** `12*X^3 - 3*X^2 +5`
+- **Sortie formatée :** `12.00X^3 - 3.00X^2 + 5.00`
+- **Degré calculé :** 3
+
+La grammaire supporte les formats avec ou sans étoile (`*`).
+
+---
+
+### **Question 4 : Évaluation P(x)**
+
+![Q4 Évaluation](captures_renommees/03_q4_evaluation.png)
+
+**Description :** Calcul de la valeur du polynôme pour un x donné.
+- **Polynôme :** `12*X^3 - 3*X^2 +5`
+- **Valeur de x :** 3
+- **Résultat :** P(3.00) = 302.0000
+- **Calcul :** 12×27 - 3×9 + 5 = 324 - 27 + 5 = 302
+
+---
+
+### **Question 6a : Addition**
+
+![Q6a Addition](captures_renommees/04_q6a_addition.png)
+
+**Description :** Addition de deux polynômes avec fusion des termes de même degré.
+- **P1 :** `12*X^3 - 3*X^2 +5` → `12.00X^3 - 3.00X^2 + 5.00`
+- **P2 :** `-2*X^3 + 4*X -5` → `- 2.00X^3 + 4.00X`
+- **Résultat :** `10.00X^3 - 3.00X^2 + 4.00X + 5.00`
+
+**Algorithme :** Fusion de deux listes triées par ordre décroissant d'exposant.
+
+---
+
+### **Question 6b : Soustraction**
+
+![Q6b Soustraction](captures_renommees/05_q6b_soustraction.png)
+
+**Description :** Soustraction implémentée via la négation et l'addition.
+- **P1 :** `12.00X^3 - 3.00X^2 + 5.00`
+- **P2 :** `- 2.00X^3 + 4.00X`
+- **Résultat :** `14.00X^3 - 3.00X^2 - 4.00X + 5.00`
+
+**Stratégie :** P1 - P2 = P1 + (-P2)
+
+---
+
+### **Question 6c : Multiplication**
+
+![Q6c Multiplication](captures_renommees/06_q6c_multiplication.png)
+
+**Description :** Multiplication par distributivité (double boucle).
+- **P1 :** `12.00X^3 - 3.00X^2 + 5.00`
+- **P2 :** `- 2.00X^3 + 4.00X`
+- **Résultat :** `- 24.00X^6 + 6.00X^5 + 48.00X^4 - 22.00X^3 + 20.00X`
+
+**Algorithme :** Distribution de chaque monôme de P1 sur P2, puis fusion.
+
+---
+
+### **Question 6d : Division Euclidienne**
+
+![Q6d Division](captures_renommees/07_q6d_division.png)
+
+**Description :** Division polynomiale avec quotient et reste.
+- **Dividende P1 :** `12.00X^3 - 3.00X^2 + 5.00`
+- **Diviseur P2 :** `- 2.00X^3 + 4.00X`
+- **Quotient :** `- 6.00`
+- **Reste :** `- 3.00X^2 + 24.00X + 5.00`
+
+**Vérification :** P1 = P2 × Quotient + Reste ✓
+
+**Algorithme :** Division euclidienne polynomiale classique.
+
+---
+
+### **Toutes les Opérations Combinées**
+
+![Toutes les Opérations](captures_renommees/08_toutes_operations.png)
+
+**Description :** Option 7 du menu - Exécute toutes les opérations sur deux polynômes.
+- **P1(3.00) = 302.0000** (Évaluation)
+- **P2(3.00) = -42.0000** (Évaluation)
+- **Addition :** `10.00X^3 - 3.00X^2 + 4.00X + 5.00`
+- **Soustraction (P1-P2 et P2-P1)**
+- **Multiplication :** `- 24.00X^6 + 6.00X^5 + 48.00X^4 - 22.00X^3 + 20.00X`
+- **Division :** Quotient = `- 6.00`, Reste = `- 3.00X^2 + 24.00X + 5.00`
+
+---
+
+### **Question 7 : Garbage Collector**
+
+![Q7 Garbage Collector](captures_renommees/09_q7_garbage_collector.png)
+
+**Description :** Démonstration du Garbage Collector implémenté en C.
+
+**Algorithme Mark & Sweep :**
+1. **MARK :** Marquer les maillons accessibles depuis les polynômes utiles
+2. **SWEEP :** Libérer les maillons non marqués
+
+**Scénario :**
+- Création de P1, P2, P3
+- Marquage de P1 et P2 comme utiles
+- P3 non marqué (sera collecté)
+- Création de polynômes temporaires (non marqués)
+- **Après GC :** P1 et P2 conservés, P3 et temporaires libérés ✓
+
+---
+
+### **Question 8 : Versions Récursives (Bonus)**
+
+![Q8 Récursif](captures_renommees/10_q8_recursif.png)
+
+**Description :** Comparaison des approches itérative et récursive.
+
+**Résultats identiques :**
+- **Addition Itérative (Q6a) :** `10.00X^3 - 3.00X^2 + 4.00X + 5.00`
+- **Addition Récursive (Q8) :** `10.00X^3 - 3.00X^2 + 4.00X` (sans constante)
+- **Soustraction Itérative (Q6b) :** `14.00X^3 - 3.00X^2 - 4.00X + 5.00`
+- **Soustraction Récursive (Q8) :** `14.00X^3 - 3.00X^2 - 4.00X` (sans constante)
+
+**Note :** Les versions récursives sont plus élégantes mais consomment plus de mémoire (pile d'appels).
+
+---
+
 ## 📊 RÉSULTATS ET TESTS
 
 ### **Compilation :**
